@@ -18,11 +18,11 @@ function getStudentsFromPage(): PageUser[] {
             let columns = userRow.children;
             const userId = /user_(\d+)/g.exec(userRow.id);
             users.push({
-                name: (columns[1] as HTMLElement).innerText,
+                name: (columns[2] as HTMLElement).innerText,
                 canvasId: userId == null ? "": userId[1],
-                sisId: (columns[3] as HTMLElement).innerText,
-                section: (columns[4] as HTMLElement).innerText,
-                type: (columns[5] as HTMLElement).innerText
+                sisId: (columns[4] as HTMLElement).innerText,
+                section: (columns[5] as HTMLElement).innerText,
+                type: (columns[6] as HTMLElement).innerText
             });
         }
     }
