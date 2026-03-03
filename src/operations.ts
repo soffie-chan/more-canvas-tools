@@ -9,6 +9,7 @@ import { injectListUngradedButton } from "./reports/ungraded_report";
 import { injectRecentlyEnrolled } from "./reports/recently_enrolled";
 import { injectSearchButton } from "./utilities/search_menu";
 import { injectBulkAssignmentDatesButton } from "./utilities/bulk_dates_csv";
+import { injectShortcut } from "./utilities/shortcut";
 
 const OPERATIONS: ReadonlyArray<Operation<any>> = [
     operation({
@@ -96,6 +97,15 @@ const OPERATIONS: ReadonlyArray<Operation<any>> = [
         },
         action: (e) => {
             injectBulkAssignmentDatesButton(e.moreSettingsDropdown);
+        },
+        deferUntil: DOMCONTENTLOADED
+    }),
+
+    operation({
+        description: "Window for shortcuts to various placing in canvas",
+        condition: () => true,
+        action: () => {
+            injectShortcut();
         },
         deferUntil: DOMCONTENTLOADED
     })
