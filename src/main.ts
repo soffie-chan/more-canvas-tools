@@ -13,13 +13,13 @@ const describeFailure = errors.failureDescriber({
     location: document.location,
 });
 
-async function getToDo() {
-  const url = "/api/v1/users/self/upcoming_events";
-  fetch(url)
-  .then(output => output.json())
-  .then(todo => console.log("Here's what I am up to this week!: ", todo))
-}
-getToDo();
+// async function getToDo() {
+//   const url = "/api/v1/users/self/upcoming_events";
+//   fetch(url)
+//   .then(output => output.json())
+//   .then(todo => console.log("Here's what I am up to this week!: ", todo))
+// }
+// getToDo();
 
 userscripter.run({
     id: U.id,

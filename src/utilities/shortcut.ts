@@ -1,9 +1,71 @@
-function Shortcutswindow() {
+function createMenu(){
+    //CSS
+    //Create Shortcut Menu
+    const createShortcutMenu = document.createElement("div");
+    let menuOpen: boolean = true;
+
+    createShortcutMenu.style.position = "fixed";
+    createShortcutMenu.style.bottom = "300px";
+    createShortcutMenu.style.right = "400px";
+    createShortcutMenu.style.width = "250px";
+    createShortcutMenu.style.height = "450px";
+    createShortcutMenu.style.background = "#ffffff";
+    createShortcutMenu.style.color = "#003366";   
+    createShortcutMenu.style.borderRadius = "8px";
+    createShortcutMenu.style.padding = "10px";
+    createShortcutMenu.style.fontSize = "16px";
+    createShortcutMenu.style.fontWeight = "bold";
+    createShortcutMenu.style.textAlign = "center";
+    createShortcutMenu.style.zIndex = "10000";
+    createShortcutMenu.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+    //Create Shortcut in Menu Button
+    const createShortcutMenuButton = document.createElement("div");
+    createShortcutMenuButton.style.position = "relative";
+    createShortcutMenuButton.style.width = "100%";
+    createShortcutMenuButton.style.background = "#ffffff";
+    createShortcutMenuButton.style.border = "1px solid #2974B3";
+    createShortcutMenuButton.style.fill = "#2974B3";
+    createShortcutMenuButton.style.marginTop = "10px";
+    createShortcutMenuButton.style.borderRadius = "4px";
+
+
+    //HTML
+    //Create Shorcut Menu
+    createShortcutMenu.innerHTML = `
+        <div style="padding: 10px;">
+            <strong>Create a Shortcut</strong>
+            <div id="detailsOfSC">
+            <form action="/shortcuts.php">
+                <label for="sc_name">Shortcut Name</label>
+                <input type="text" id="sc_name" name="Shortcut_Name"><br><br>
+                <label for="sc_url">Shortcut URL</label>
+                <input type="url" id="sc_url" name="Shortcut_URL"><br><br>
+            </form>
+            </div>
+        </div>
+    `;
+    //Create Shortcut in Menu button
+    createShortcutMenuButton.innerHTML = `
+        <div style="padding: 15px;" id = create_shortcut>
+            <button id>Add Shortcut</button>
+        </div>
+    `;
+
+    document.body.appendChild(createShortcutMenu);
+    createShortcutMenu.appendChild(createShortcutMenuButton);
+
+}
+
+
+function Shortcutswindow() { //This function is called
+    //CSS
+    //Header
     const ShortcutHeader = document.createElement("div");
     ShortcutHeader.style.position = "fixed";
     ShortcutHeader.style.bottom = "20px";
     ShortcutHeader.style.right = "20px";
     ShortcutHeader.style.width = "250px";
+    ShortcutHeader.style.height = "550px";
     ShortcutHeader.style.background = "#003366";
     ShortcutHeader.style.color = "white";   
     ShortcutHeader.style.borderRadius = "8px";
@@ -13,34 +75,39 @@ function Shortcutswindow() {
     ShortcutHeader.style.textAlign = "center";
     ShortcutHeader.style.zIndex = "9999";
     ShortcutHeader.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+    //Shortcut Button
+    const shortcutButton = document.createElement("div");
+    shortcutButton.style.position = "relative";
+    shortcutButton.style.width = "100%";
+    shortcutButton.style.background = "#ffffff";
+    shortcutButton.style.border = "1px solid #2974B3";
+    shortcutButton.style.marginTop = "10px";
+    shortcutButton.style.borderRadius = "4px";
 
-    const shortcut = document.createElement("div");
-    shortcut.style.position = "relative";
-    shortcut.style.width = "100%";
-    shortcut.style.background = "#ffffff";
-    shortcut.style.border = "1px solid #2974B3";
-    shortcut.style.marginTop = "10px";
-    shortcut.style.borderRadius = "4px";
 
+
+    //HTML
+    //Shortcuts Pnel
     ShortcutHeader.innerHTML = `
         <div style="padding: 10px;">
             <strong>Shortcuts</strong>
         </div>
     `;
-
-    shortcut.innerHTML = `
-        <div style="padding: 15px;">
-            <strong>Support</strong>
-            <p>Need help?</p>
-            <button>Chat</button>
+    //Shortcut Button
+    shortcutButton.innerHTML = `
+        <div style="padding: 15px;" id = shortcut_button>
+            <button id>Add Shortcut</button>
         </div>
     `;
 
-    ShortcutHeader.appendChild(shortcut);
+    //CALLS
+    ShortcutHeader.appendChild(shortcutButton);
     document.body.appendChild(ShortcutHeader);
-
 }
 
+
+//INJECTION CALL
 export async function injectShortcut() {
     Shortcutswindow();
+    $("#shortcut_button").on("click", () => createMenu());
 }
