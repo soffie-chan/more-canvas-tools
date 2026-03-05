@@ -1,3 +1,23 @@
+function saveShortcut(name: string, url: string) {
+    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]"); //This is how strings get stored! Getting shorcuts
+    shortcuts.push({ name, url }); //add shortcut to in-memory, not stored
+    localStorage.setItem("shortcuts", JSON.stringify(shortcuts)); //finally stored
+}
+
+function loadShortcuts() {
+    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as  { name: string; url: string }[]; //basically saying "hey, all shortcuts have url and name"
+    const shortcutMemory = document.getElementById("shortcuts_list") as HTMLDivElement; //basically "trust me its a div bro"
+    shortcutMemory.innerHTML = ""; //empty
+    shortcuts.forEach(s => {
+        shortcutMemory?.appendChild(makeAShortcut(s.name, s.url)); //"get" all the links back from memory 
+    });
+}
+
+function clearALLShortcuts(){
+    localStorage.setItem("shortcuts", JSON.stringify([]));
+    loadShortcuts();
+}
+
 function makeAShortcut(name:string, url:string){
     //const menu = (document.getElementById("shortcut_menu") as HTMLElement);
     //const menuStuff = (document.getElementById("create_shortcut") as HTMLElement);
@@ -5,6 +25,7 @@ function makeAShortcut(name:string, url:string){
     shortcutLink.href = url;
     shortcutLink.text = name;
     shortcutLink.textContent = name;
+    saveShortcut(name, url);
     return shortcutLink;
 }
 
@@ -62,13 +83,15 @@ function createMenu(){
 
     document.body.appendChild(createShortcutMenu);
     createShortcutMenu.appendChild(createShortcutMenuButton);
+
     createShortcutMenuButton.addEventListener("click", () => {
     const shortcutName = (document.getElementById("sc_name") as HTMLInputElement).value;
     const shortcutURL = (document.getElementById("sc_url") as HTMLInputElement).value;
     console.log(shortcutName, shortcutURL);
     let newLink = makeAShortcut(shortcutName, shortcutURL);
-    const shortcutHeader = document.getElementById("shortcut_header");
-    shortcutHeader?.appendChild(newLink);
+    const SCList = document.getElementById("shortcuts_list");
+    SCList?.appendChild(newLink);
+
 });
 
 }
@@ -96,11 +119,21 @@ function Shortcutswindow() { //This function is called
     const shortcutButton = document.createElement("div");
     shortcutButton.style.position = "relative";
     shortcutButton.style.width = "100%";
-    shortcutButton.style.height = "490px";
     shortcutButton.style.background = "#ffffff";
     shortcutButton.style.border = "1px solid #2974B3";
     shortcutButton.style.marginTop = "10px";
     shortcutButton.style.borderRadius = "4px";
+    //Shortcuts List
+    const shortcutsList = document.createElement("div")
+
+    shortcutsList.style.padding = "10px"
+    shortcutsList.style.flexDirection = "column"
+    shortcutsList.style.display = "flex"
+    shortcutsList.style.height = "420px";
+    shortcutsList.style.background = "#ffffff";
+    shortcutsList.style.overflowY = "auto";
+    shortcutsList.style.justifyContent = "flex-start";
+
 
 
     //HTML
@@ -117,11 +150,13 @@ function Shortcutswindow() { //This function is called
         </div>
     `;
 
-    //CALLS
-    ShortcutHeader.id = "shortcut_header";
+    //CALLS AND IDS
+    shortcutsList.id = "shortcuts_list";
     document.body.appendChild(ShortcutHeader);
+    ShortcutHeader.appendChild(shortcutsList)
     ShortcutHeader.appendChild(shortcutButton);
-
+    clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
+    loadShortcuts();
 }
 
 
