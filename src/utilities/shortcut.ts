@@ -155,7 +155,7 @@ function Shortcutswindow() { //This function is called
     document.body.appendChild(ShortcutHeader);
     ShortcutHeader.appendChild(shortcutsList)
     ShortcutHeader.appendChild(shortcutButton);
-    clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
+   // clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
     loadShortcuts();
 }
 
