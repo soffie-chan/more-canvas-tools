@@ -1,8 +1,17 @@
+function makeAShortcut(name:string, url:string){
+    //const menu = (document.getElementById("shortcut_menu") as HTMLElement);
+    //const menuStuff = (document.getElementById("create_shortcut") as HTMLElement);
+    const shortcutLink = document.createElement("a");
+    shortcutLink.href = url;
+    shortcutLink.text = name;
+    shortcutLink.textContent = name;
+    return shortcutLink;
+}
+
 function createMenu(){
     //CSS
     //Create Shortcut Menu
     const createShortcutMenu = document.createElement("div");
-    let menuOpen: boolean = true;
 
     createShortcutMenu.style.position = "fixed";
     createShortcutMenu.style.bottom = "300px";
@@ -32,10 +41,10 @@ function createMenu(){
     //HTML
     //Create Shorcut Menu
     createShortcutMenu.innerHTML = `
-        <div style="padding: 10px;">
+        <div id=shortcut_menu style="padding: 10px;">
             <strong>Create a Shortcut</strong>
             <div id="detailsOfSC">
-            <form action="/shortcuts.php">
+            <form>
                 <label for="sc_name">Shortcut Name</label>
                 <input type="text" id="sc_name" name="Shortcut_Name"><br><br>
                 <label for="sc_url">Shortcut URL</label>
@@ -47,12 +56,20 @@ function createMenu(){
     //Create Shortcut in Menu button
     createShortcutMenuButton.innerHTML = `
         <div style="padding: 15px;" id = create_shortcut>
-            <button id>Add Shortcut</button>
+            <button id>Create Shortcut</button>
         </div>
     `;
 
     document.body.appendChild(createShortcutMenu);
     createShortcutMenu.appendChild(createShortcutMenuButton);
+    createShortcutMenuButton.addEventListener("click", () => {
+    const shortcutName = (document.getElementById("sc_name") as HTMLInputElement).value;
+    const shortcutURL = (document.getElementById("sc_url") as HTMLInputElement).value;
+    console.log(shortcutName, shortcutURL);
+    let newLink = makeAShortcut(shortcutName, shortcutURL);
+    const shortcutHeader = document.getElementById("shortcut_header");
+    shortcutHeader?.appendChild(newLink);
+});
 
 }
 
@@ -79,11 +96,11 @@ function Shortcutswindow() { //This function is called
     const shortcutButton = document.createElement("div");
     shortcutButton.style.position = "relative";
     shortcutButton.style.width = "100%";
+    shortcutButton.style.height = "490px";
     shortcutButton.style.background = "#ffffff";
     shortcutButton.style.border = "1px solid #2974B3";
     shortcutButton.style.marginTop = "10px";
     shortcutButton.style.borderRadius = "4px";
-
 
 
     //HTML
@@ -101,8 +118,10 @@ function Shortcutswindow() { //This function is called
     `;
 
     //CALLS
-    ShortcutHeader.appendChild(shortcutButton);
+    ShortcutHeader.id = "shortcut_header";
     document.body.appendChild(ShortcutHeader);
+    ShortcutHeader.appendChild(shortcutButton);
+
 }
 
 
