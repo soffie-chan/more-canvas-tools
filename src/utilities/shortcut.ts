@@ -18,6 +18,11 @@ function clearALLShortcuts(){
     loadShortcuts();
 }
 
+function closeMenu(){
+    const menu = (document.getElementById("shortcut_menu") as HTMLDivElement);
+    menu.remove();
+}
+
 function makeAShortcut(name:string, url:string){
     //const menu = (document.getElementById("shortcut_menu") as HTMLElement);
     //const menuStuff = (document.getElementById("create_shortcut") as HTMLElement);
@@ -53,10 +58,13 @@ function createMenu(){
     createShortcutMenuButton.style.position = "relative";
     createShortcutMenuButton.style.width = "100%";
     createShortcutMenuButton.style.background = "#ffffff";
-    createShortcutMenuButton.style.border = "1px solid #2974B3";
-    createShortcutMenuButton.style.fill = "#2974B3";
     createShortcutMenuButton.style.marginTop = "10px";
-    createShortcutMenuButton.style.borderRadius = "4px";
+    //Cancel Shortcut in Menu Button
+    const closeShortcutMenuButton = document.createElement("div");
+    createShortcutMenuButton.style.position = "relative";
+    createShortcutMenuButton.style.width = "100%";
+    createShortcutMenuButton.style.background = "#ffffff";
+    createShortcutMenuButton.style.marginTop = "40px";
 
 
     //HTML
@@ -64,6 +72,8 @@ function createMenu(){
     createShortcutMenu.innerHTML = `
         <div id=shortcut_menu style="padding: 10px;">
             <strong>Create a Shortcut</strong>
+            <br>
+            <br>
             <div id="detailsOfSC">
             <form>
                 <label for="sc_name">Shortcut Name</label>
@@ -80,14 +90,26 @@ function createMenu(){
             <button id>Create Shortcut</button>
         </div>
     `;
+    closeShortcutMenuButton.innerHTML = `
+        <div style="padding: 15px;" id = close_menu>
+            <button id>Cancel</button>
+        </div>
+    `
 
     document.body.appendChild(createShortcutMenu);
     createShortcutMenu.appendChild(createShortcutMenuButton);
+    createShortcutMenu.appendChild(closeShortcutMenuButton)
+
+    
+    closeShortcutMenuButton.addEventListener("click", () => {
+    closeMenu();
+});
+
 
     createShortcutMenuButton.addEventListener("click", () => {
+    closeMenu();
     const shortcutName = (document.getElementById("sc_name") as HTMLInputElement).value;
     const shortcutURL = (document.getElementById("sc_url") as HTMLInputElement).value;
-    console.log(shortcutName, shortcutURL);
     let newLink = makeAShortcut(shortcutName, shortcutURL);
     const SCList = document.getElementById("shortcuts_list");
     SCList?.appendChild(newLink);
@@ -163,5 +185,6 @@ function Shortcutswindow() { //This function is called
 //INJECTION CALL
 export async function injectShortcut() {
     Shortcutswindow();
+    console.log(document.querySelectorAll("#shortcut_menu").length);
     $("#shortcut_button").on("click", () => createMenu());
 }
