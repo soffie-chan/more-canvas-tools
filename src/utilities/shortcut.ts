@@ -35,6 +35,7 @@ function createMenu(){
     //CSS
     //Create Shortcut Menu
     const createShortcutMenu = document.createElement("div");
+    createShortcutMenu.id = "shortcut_menu";
 
     createShortcutMenu.style.position = "fixed";
     createShortcutMenu.style.bottom = "300px";
@@ -94,6 +95,28 @@ function createMenu(){
     const SCList = document.getElementById("shortcuts_list");
     SCList?.appendChild(newLink);
 
+    //menu draggable functionality
+        let isMenuDragging = false;
+        let menuOffsetX = 0;
+        let menuOffsetY = 0;
+        createShortcutMenu.addEventListener("mousedown", (e) => {
+            isMenuDragging = true;
+            menuOffsetX = e.clientX - createShortcutMenu.getBoundingClientRect().left;
+            menuOffsetY = e.clientY - createShortcutMenu.getBoundingClientRect().top;
+            createShortcutMenu.style.transition = "none"; // Disable transition during dragging
+        }
+        );
+        document.addEventListener("mousemove", (e) => {
+            if (isMenuDragging) {
+                createShortcutMenu.style.left = `${e.clientX - menuOffsetX}px`;
+                createShortcutMenu.style.top = `${e.clientY - menuOffsetY}px`;
+            }
+        });
+        document.addEventListener("mouseup", () => {
+            isMenuDragging = false;
+            createShortcutMenu.style.transition = "all 0.3s ease"; // Re-enable transition after dragging
+        }
+    );
 });
 
 }
@@ -219,6 +242,7 @@ function Shortcutswindow() { //This function is called
         isDragging = false;
         ShortcutContainer.style.transition = "all 0.3s ease"; // Re-enable transition after dragging
     });
+
 
 }
 
