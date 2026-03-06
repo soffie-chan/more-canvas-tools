@@ -1,3 +1,5 @@
+import { startDialog } from "~src/canvas/dialog";
+
 function saveShortcut(name: string, url: string) {
     const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]"); //This is how strings get stored! Getting shorcuts
     shortcuts.push({ name, url }); //add shortcut to in-memory, not stored
@@ -99,24 +101,37 @@ function createMenu(){
 
 function Shortcutswindow() { //This function is called
     //CSS
-    //Header
+    //container
+    const ShortcutContainer = document.createElement("div");
+    ShortcutContainer.id = "shortcut_container";
+    ShortcutContainer.style.position = "absolute";
+    ShortcutContainer.style.bottom = "20px";
+    ShortcutContainer.style.right = "20px";
+    ShortcutContainer.style.width = "250px";
+    ShortcutContainer.style.height = "550px";
+    ShortcutContainer.style.background = "#003366";
+    ShortcutContainer.style.color = "white";   
+    ShortcutContainer.style.borderRadius = "8px";
+    ShortcutContainer.style.padding = "10px";
+    ShortcutContainer.style.fontSize = "16px";
+    ShortcutContainer.style.fontWeight = "bold";
+    ShortcutContainer.style.textAlign = "center";
+    ShortcutContainer.style.zIndex = "9999";
+    ShortcutContainer.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+    ShortcutContainer.draggable = true;
+    ShortcutContainer.style.cursor = "move";
+
+    //shortcut header
     const ShortcutHeader = document.createElement("div");
-    ShortcutHeader.style.position = "fixed";
-    ShortcutHeader.style.bottom = "20px";
-    ShortcutHeader.style.right = "20px";
-    ShortcutHeader.style.width = "250px";
-    ShortcutHeader.style.height = "550px";
-    ShortcutHeader.style.background = "#003366";
-    ShortcutHeader.style.color = "white";   
-    ShortcutHeader.style.borderRadius = "8px";
-    ShortcutHeader.style.padding = "10px";
-    ShortcutHeader.style.fontSize = "16px";
-    ShortcutHeader.style.fontWeight = "bold";
-    ShortcutHeader.style.textAlign = "center";
-    ShortcutHeader.style.zIndex = "9999";
-    ShortcutHeader.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+    ShortcutHeader.id = "shortcut_header";
+    ShortcutHeader.style.position = "relative";
+    ShortcutHeader.style.width = "100%";
+  
+
+    
     //Shortcut Button
     const shortcutButton = document.createElement("div");
+    shortcutButton.id = "shortcut_button";
     shortcutButton.style.position = "relative";
     shortcutButton.style.width = "100%";
     shortcutButton.style.background = "#ffffff";
@@ -125,6 +140,7 @@ function Shortcutswindow() { //This function is called
     shortcutButton.style.borderRadius = "4px";
     //Shortcuts List
     const shortcutsList = document.createElement("div")
+    shortcutsList.id = "shortcuts_list";
 
     shortcutsList.style.padding = "10px"
     shortcutsList.style.flexDirection = "column"
@@ -134,14 +150,19 @@ function Shortcutswindow() { //This function is called
     shortcutsList.style.overflowY = "auto";
     shortcutsList.style.justifyContent = "flex-start";
 
-
+    const ShortcutContent = document.createElement("div");
+    ShortcutContent.id = "shortcut_content";
 
     //HTML
-    //Shortcuts Pnel
+    //Shortcuts Panel
     ShortcutHeader.innerHTML = `
-        <div style="padding: 10px;">
+        <div style="padding: 10px; ">
+            <button id="minimize_shortcuts" style="position: absolute; top: 10px; right: 10px; background: transparent; border: 1px solid white; color: white; font-size: 18px; cursor: pointer;">
+                &#x2212;
+            </button>
             <strong>Shortcuts</strong>
         </div>
+       
     `;
     //Shortcut Button
     shortcutButton.innerHTML = `
@@ -150,18 +171,61 @@ function Shortcutswindow() { //This function is called
         </div>
     `;
 
+    
+
     //CALLS AND IDS
     shortcutsList.id = "shortcuts_list";
-    document.body.appendChild(ShortcutHeader);
-    ShortcutHeader.appendChild(shortcutsList)
-    ShortcutHeader.appendChild(shortcutButton);
-   // clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
+    document.body.appendChild(ShortcutContainer);
+    ShortcutContainer.appendChild(ShortcutHeader);
+    ShortcutContainer.appendChild(ShortcutContent);
+    ShortcutContent.appendChild(shortcutsList)
+    // ShortcutContainer.appendChild(shortcutsList)
+    ShortcutContent.appendChild(shortcutButton);
+    //clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
     loadShortcuts();
+
+    //COLLAPSIBLE FUNCTIONALITY
+    let isMinimized = false;
+    const minimizeButton = document.getElementById("minimize_shortcuts") as HTMLButtonElement;
+    minimizeButton.addEventListener("click", () => {
+        isMinimized = !isMinimized;
+        ShortcutContent.style.display = isMinimized ? "none" : "flex";
+        minimizeButton.textContent = isMinimized ? "+" : "−";
+        ShortcutContainer.style.height = isMinimized ? "auto" : "550px";
+    });
+
+    //Set proper display for ShortcutContent
+    ShortcutContent.style.display = "flex";
+    ShortcutContent.style.flexDirection = "column";
+
+    //DRAGGABLE FUNCTIONALITY
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+    ShortcutHeader.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - ShortcutContainer.getBoundingClientRect().left;
+        offsetY = e.clientY - ShortcutContainer.getBoundingClientRect().top;
+        ShortcutContainer.style.transition = "none"; // Disable transition during dragging
+    }
+    );
+    document.addEventListener("mousemove", (e) => {
+        if (isDragging) {
+            ShortcutContainer.style.left = `${e.clientX - offsetX}px`;
+            ShortcutContainer.style.top = `${e.clientY - offsetY}px`;
+        }
+    });
+    document.addEventListener("mouseup", () => {
+        isDragging = false;
+        ShortcutContainer.style.transition = "all 0.3s ease"; // Re-enable transition after dragging
+    });
+
 }
 
 
+
 //INJECTION CALL
-export async function injectShortcut() {
+export function injectShortcut() {
     Shortcutswindow();
     $("#shortcut_button").on("click", () => createMenu());
 }
