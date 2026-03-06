@@ -129,10 +129,10 @@ Ever have to look through your professor’s Canvas modules to find something yo
 
 In this extension, you’ll be able to do the following -
 
-Create a Canvas shortcut by inputting a link and a name for your shortcut
-Access the link even when you refresh the page
-Click on links to take you to the page
-Have your links organized in a menu
+- Create a Canvas shortcut by inputting a link and a name for your shortcut
+- Access the link even when you refresh the page
+- Click on links to take you to the page
+- Have your links organized in a menu
 
 On any canvas page you will be able to create a bookmark, as well as navigate straight to that URL through the bookmark from now on. 
 <img width="1796" height="853" alt="image" src="https://github.com/user-attachments/assets/3204f8f4-5cd0-4973-b6b9-bc07127efd2d" />
@@ -144,9 +144,9 @@ Insert the name and URL of the bookmark and click create bookmark.
 You'll then be able to navigate back to that page through the bookmark and won't have to worry about getting lost on you way to a file or assignment. 
 
 For future updates, we plan to implement the following
-Delete a Shortcut
-Close the menu that makes you implement shortcuts
-Minimize and maximize the Shortcuts menu
+- Delete a Shortcut
+- Close the menu that makes you implement shortcuts
+- Minimize and maximize the Shortcuts menu
 
 
 ## Development Environment Installation
