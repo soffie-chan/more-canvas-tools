@@ -11,7 +11,7 @@ function loadShortcuts() {
     const shortcutMemory = document.getElementById("shortcuts_list") as HTMLDivElement; //basically "trust me its a div bro"
     shortcutMemory.innerHTML = ""; //empty
     shortcuts.forEach(s => {
-        shortcutMemory?.appendChild(makeAShortcut(s.name, s.url)); //"get" all the links back from memory 
+        shortcutMemory?.appendChild(makeAShortcut(s.name, s.url, false)); //"get" all the links back from memory 
     });
 }
 
@@ -20,14 +20,16 @@ function clearALLShortcuts(){
     loadShortcuts();
 }
 
-function makeAShortcut(name:string, url:string){
+function makeAShortcut(name:string, url:string, shouldSave: boolean = true){
     //const menu = (document.getElementById("shortcut_menu") as HTMLElement);
     //const menuStuff = (document.getElementById("create_shortcut") as HTMLElement);
     const shortcutLink = document.createElement("a");
     shortcutLink.href = url;
     shortcutLink.text = name;
     shortcutLink.textContent = name;
-    saveShortcut(name, url);
+    if (shouldSave) {
+        saveShortcut(name, url);
+    }
     return shortcutLink;
 }
 
@@ -37,8 +39,8 @@ function createMenu(){
     const createShortcutMenu = document.createElement("div");
     createShortcutMenu.id = "shortcut_menu";
 
-    createShortcutMenu.style.position = "fixed";
-    createShortcutMenu.style.bottom = "300px";
+    createShortcutMenu.style.position = "absolute";
+    createShortcutMenu.style.bottom = "100px";
     createShortcutMenu.style.right = "400px";
     createShortcutMenu.style.width = "250px";
     createShortcutMenu.style.height = "450px";
@@ -61,12 +63,24 @@ function createMenu(){
     createShortcutMenuButton.style.marginTop = "10px";
     createShortcutMenuButton.style.borderRadius = "4px";
 
+      //shortcut header
+    const ShortcutMenuHeader = document.createElement("div");
+    ShortcutMenuHeader.id = "shortcut_header";
+    ShortcutMenuHeader.style.position = "relative";
+    ShortcutMenuHeader.style.width = "100%";
+
+    //shortcut content
+    const ShortcutMenuContent = document.createElement("div");
+    ShortcutMenuContent.id = "shortcut_content";
 
     //HTML
     //Create Shorcut Menu
-    createShortcutMenu.innerHTML = `
-        <div id=shortcut_menu style="padding: 10px;">
+    ShortcutMenuHeader.innerHTML = `
+        <div id=shortcut_header style="padding: 10px;">
             <strong>Create a Shortcut</strong>
+        </div>
+    `;
+    ShortcutMenuContent.innerHTML = `
             <div id="detailsOfSC">
             <form>
                 <label for="sc_name">Shortcut Name</label>
@@ -85,7 +99,10 @@ function createMenu(){
     `;
 
     document.body.appendChild(createShortcutMenu);
+    createShortcutMenu.appendChild(ShortcutMenuHeader);
+    createShortcutMenu.appendChild(ShortcutMenuContent);
     createShortcutMenu.appendChild(createShortcutMenuButton);
+
 
     createShortcutMenuButton.addEventListener("click", () => {
     const shortcutName = (document.getElementById("sc_name") as HTMLInputElement).value;
@@ -96,27 +113,28 @@ function createMenu(){
     SCList?.appendChild(newLink);
 
     //menu draggable functionality
-        let isMenuDragging = false;
-        let menuOffsetX = 0;
-        let menuOffsetY = 0;
-        createShortcutMenu.addEventListener("mousedown", (e) => {
-            isMenuDragging = true;
-            menuOffsetX = e.clientX - createShortcutMenu.getBoundingClientRect().left;
-            menuOffsetY = e.clientY - createShortcutMenu.getBoundingClientRect().top;
-            createShortcutMenu.style.transition = "none"; // Disable transition during dragging
-        }
-        );
-        document.addEventListener("mousemove", (e) => {
-            if (isMenuDragging) {
-                createShortcutMenu.style.left = `${e.clientX - menuOffsetX}px`;
-                createShortcutMenu.style.top = `${e.clientY - menuOffsetY}px`;
-            }
-        });
-        document.addEventListener("mouseup", () => {
-            isMenuDragging = false;
-            createShortcutMenu.style.transition = "all 0.3s ease"; // Re-enable transition after dragging
-        }
-    );
+    //     let isMenuDragging = false;
+    //     let menuOffsetX = 0;
+    //     let menuOffsetY = 0;
+    //     ShortcutMenuHeader.addEventListener("mousedown", (e) => {
+    //         isMenuDragging = true;
+    //         menuOffsetX = e.clientX - createShortcutMenu.getBoundingClientRect().left;
+    //         menuOffsetY = e.clientY - createShortcutMenu.getBoundingClientRect().top;
+    //         createShortcutMenu.style.transition = "none"; // Disable transition during dragging
+    //     }
+    //     );
+    //     document.addEventListener("mousemove", (e) => {
+    //         if (isMenuDragging) {
+    //             createShortcutMenu.style.left = `${e.clientX - menuOffsetX}px`;
+    //             createShortcutMenu.style.top = `${e.clientY - menuOffsetY}px`;
+    //         }
+    //     });
+    //     document.addEventListener("mouseup", () => {
+    //         isMenuDragging = false;
+    //         createShortcutMenu.style.transition = "all 0.3s ease"; // Re-enable transition after dragging
+    //     }
+    // );
+
 });
 
 }
@@ -242,6 +260,7 @@ function Shortcutswindow() { //This function is called
         isDragging = false;
         ShortcutContainer.style.transition = "all 0.3s ease"; // Re-enable transition after dragging
     });
+
 
 
 }
