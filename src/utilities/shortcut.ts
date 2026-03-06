@@ -11,7 +11,7 @@ function loadShortcuts() {
     const shortcutMemory = document.getElementById("shortcuts_list") as HTMLDivElement; //basically "trust me its a div bro"
     shortcutMemory.innerHTML = ""; //empty
     shortcuts.forEach(s => {
-        shortcutMemory?.appendChild(makeAShortcut(s.name, s.url, false)); //"get" all the links back from memory 
+        shortcutMemory?.appendChild(makeAShortcut(s.name, s.url)); //"get" all the links back from memory 
     });
 }
 
@@ -32,9 +32,6 @@ function makeAShortcut(name:string, url:string){
     shortcutLink.href = url;
     shortcutLink.text = name;
     shortcutLink.textContent = name;
-    if (shouldSave) {
-        saveShortcut(name, url);
-    }
     return shortcutLink;
 }
 
