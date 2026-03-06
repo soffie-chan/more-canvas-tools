@@ -191,7 +191,7 @@ function Shortcutswindow() { //This function is called
         isMinimized = !isMinimized;
         ShortcutContent.style.display = isMinimized ? "none" : "flex";
         minimizeButton.textContent = isMinimized ? "+" : "−";
-        ShortcutContainer.style.height = isMinimized ? "auto" : "550px";
+        ShortcutContainer.style.height = isMinimized ? "40px" : "550px";
     });
 
     //Set proper display for ShortcutContent
