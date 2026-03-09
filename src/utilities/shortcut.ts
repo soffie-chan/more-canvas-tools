@@ -15,7 +15,7 @@ function loadShortcuts() {
     });
 }
 
-function clearALLShortcuts(){
+function clearALLShortcuts(){ //FOR DEBUGGING
     localStorage.setItem("shortcuts", JSON.stringify([]));
     loadShortcuts();
 }
@@ -23,6 +23,7 @@ function clearALLShortcuts(){
 function closeMenu(){
     const menu = (document.getElementById("shortcut_menu") as HTMLDivElement);
     menu.remove();
+    
 }
 
 function makeAShortcut(name:string, url:string){
@@ -114,19 +115,20 @@ function createMenu(){
     createShortcutMenu.appendChild(createShortcutMenuButton);
     createShortcutMenu.appendChild(closeShortcutMenuButton)
 
+    //autofill
+    const urlBar = document.getElementById("sc_url") as HTMLInputElement;
+    urlBar.value = window.location.href;
     
     closeShortcutMenuButton.addEventListener("click", () => {
     closeMenu();
 });
-
-
 
     createShortcutMenuButton.addEventListener("click", () => {
     closeMenu();
     const shortcutName = (document.getElementById("sc_name") as HTMLInputElement).value;
     const shortcutURL = (document.getElementById("sc_url") as HTMLInputElement).value;
     let newLink = makeAShortcut(shortcutName, shortcutURL);
-    const SCList = document.getElementById("shortcuts_list");
+    const SCList = document.getElementById("shortcut_container");
     SCList?.appendChild(newLink);
 
     //menu draggable functionality
