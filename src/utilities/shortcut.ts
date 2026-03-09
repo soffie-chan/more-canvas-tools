@@ -41,7 +41,7 @@ function createMenu(){
     const createShortcutMenu = document.createElement("div");
     createShortcutMenu.id = "shortcut_menu";
 
-    createShortcutMenu.style.position = "absolute";
+    createShortcutMenu.style.position = "fixed";
     createShortcutMenu.style.bottom = "100px";
     createShortcutMenu.style.right = "400px";
     createShortcutMenu.style.width = "250px";
@@ -162,7 +162,7 @@ function Shortcutswindow() { //This function is called
     //container
     const ShortcutContainer = document.createElement("div");
     ShortcutContainer.id = "shortcut_container";
-    ShortcutContainer.style.position = "absolute";
+    ShortcutContainer.style.position = "fixed";
     ShortcutContainer.style.bottom = "20px";
     ShortcutContainer.style.right = "20px";
     ShortcutContainer.style.width = "250px";
