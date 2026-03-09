@@ -131,6 +131,7 @@ function createMenu(){
     let newLink = makeAShortcut(shortcutName, shortcutURL);
     const SCList = document.getElementById("shortcuts_list");
     SCList?.appendChild(newLink);
+    saveShortcut(shortcutName,shortcutURL);
     closeMenu();
 
     //menu draggable functionality
