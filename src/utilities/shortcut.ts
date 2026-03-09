@@ -33,6 +33,31 @@ function makeAShortcut(name:string, url:string){
     shortcutLink.href = url;
     shortcutLink.text = name;
     shortcutLink.textContent = name;
+    shortcutLink.id = "shortcut_link"
+    //HERE
+    const linkHolder = document.createElement("div");
+
+    const deleteShortcut = document.createElement("button")
+    deleteShortcut.id = "shortcut_delete_button"
+    deleteShortcut.textContent = "X";
+
+    const editShortcut = document.createElement("button")
+    editShortcut.id = "shortcut_edit_button"
+    editShortcut.textContent = "✎";
+
+    //Hover animations
+    shortcutLink.addEventListener("mouseover", (e)=>{
+        if(document.getElementById("shortcut_delete_button")) return;
+        if(document.getElementById("shortcut_edit_button")) return;
+        shortcutLink.appendChild(deleteShortcut);
+        shortcutLink.appendChild(editShortcut)
+    });
+
+    shortcutLink.addEventListener("mouseout",(e)=>{
+        shortcutLink.removeChild(deleteShortcut)
+        shortcutLink.removeChild(editShortcut)
+    })
+
     return shortcutLink;
 }
 
@@ -130,6 +155,7 @@ function createMenu(){
     const shortcutURL = (document.getElementById("sc_url") as HTMLInputElement).value;
     let newLink = makeAShortcut(shortcutName, shortcutURL);
     const SCList = document.getElementById("shortcuts_list");
+
     SCList?.appendChild(newLink);
     saveShortcut(shortcutName,shortcutURL);
     closeMenu();
@@ -211,7 +237,7 @@ function Shortcutswindow() { //This function is called
     shortcutsList.style.height = "420px";
     shortcutsList.style.background = "#ffffff";
     shortcutsList.style.overflowY = "auto";
-    shortcutsList.style.justifyContent = "flex-start";
+    shortcutsList.style.textAlign = "left";
 
     const ShortcutContent = document.createElement("div");
     ShortcutContent.id = "shortcut_content";
@@ -242,7 +268,6 @@ function Shortcutswindow() { //This function is called
     ShortcutContainer.appendChild(ShortcutHeader);
     ShortcutContainer.appendChild(ShortcutContent);
     ShortcutContent.appendChild(shortcutsList)
-    // ShortcutContainer.appendChild(shortcutsList)
     ShortcutContent.appendChild(shortcutButton);
     //clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
     loadShortcuts();
