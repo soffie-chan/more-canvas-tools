@@ -37,6 +37,8 @@ function makeAShortcut(name:string, url:string){
 }
 
 function createMenu(){
+    if (document.getElementById("shortcut_menu")) return; //prevent "create shortcut" button spam
+
     //CSS
     //Create Shortcut Menu
     const createShortcutMenu = document.createElement("div");
@@ -124,12 +126,12 @@ function createMenu(){
 });
 
     createShortcutMenuButton.addEventListener("click", () => {
-    closeMenu();
     const shortcutName = (document.getElementById("sc_name") as HTMLInputElement).value;
     const shortcutURL = (document.getElementById("sc_url") as HTMLInputElement).value;
     let newLink = makeAShortcut(shortcutName, shortcutURL);
-    const SCList = document.getElementById("shortcut_container");
+    const SCList = document.getElementById("shortcuts_list");
     SCList?.appendChild(newLink);
+    closeMenu();
 
     //menu draggable functionality
     //     let isMenuDragging = false;
