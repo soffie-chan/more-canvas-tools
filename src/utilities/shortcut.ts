@@ -76,7 +76,7 @@ function makeAShortcut(name:string, url:string){
         event.preventDefault();
         event.stopPropagation();
         const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
-        const updated = shortcuts.filter(s => !(s.name === name && s.url === url));
+        const updated = shortcuts.filter(shortcut => !(shortcut.name === name && shortcut.url === url));
         localStorage.setItem("shortcuts", JSON.stringify(updated));
         loadShortcuts();
     });
@@ -88,7 +88,7 @@ function makeAShortcut(name:string, url:string){
         const newUrl = prompt("Edit shortcut URL:", url);
         if (!newName || !newUrl) return;
         const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
-        const updated = shortcuts.map(s => s.name === name && s.url === url ? {name:newName,url:newUrl} : s);
+        const updated = shortcuts.map(shortcut => shortcut.name === name && shortcut.url === url ? {name:newName,url:newUrl} : shortcut);
         localStorage.setItem("shortcuts", JSON.stringify(updated));
         loadShortcuts();
     });
