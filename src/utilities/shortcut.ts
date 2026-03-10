@@ -161,15 +161,8 @@ function createMenu(){
     const SCList = document.getElementById("shortcuts_list");
 
     SCList?.appendChild(newLink);
-<<<<<<< HEAD
     saveShortcut(shortcutName,shortcutURL);
-=======
-    saveShortcut(shortcutName, shortcutURL);
-    loadShortcuts();
->>>>>>> af51537e2bcc133a0ccef8b4ec46bb6e84bed35e
     closeMenu();
-
-
 });
 
 }
