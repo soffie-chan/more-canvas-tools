@@ -19,7 +19,6 @@ function clearALLShortcuts(){ //FOR DEBUGGING
     localStorage.setItem("shortcuts", JSON.stringify([]));
     loadShortcuts();
 }
-
 function closeMenu(){
     const menu = (document.getElementById("shortcut_menu") as HTMLDivElement);
     menu.remove();
@@ -145,6 +144,11 @@ function createMenu(){
     //autofill
     const urlBar = document.getElementById("sc_url") as HTMLInputElement;
     urlBar.value = window.location.href;
+
+    //autofill name
+    const nameBar = document.getElementById("sc_name") as HTMLInputElement;
+    nameBar.value = document.title;
+
     
     closeShortcutMenuButton.addEventListener("click", () => {
     closeMenu();
@@ -157,31 +161,14 @@ function createMenu(){
     const SCList = document.getElementById("shortcuts_list");
 
     SCList?.appendChild(newLink);
+<<<<<<< HEAD
     saveShortcut(shortcutName,shortcutURL);
+=======
+    saveShortcut(shortcutName, shortcutURL);
+    loadShortcuts();
+>>>>>>> af51537e2bcc133a0ccef8b4ec46bb6e84bed35e
     closeMenu();
 
-    //menu draggable functionality
-    //     let isMenuDragging = false;
-    //     let menuOffsetX = 0;
-    //     let menuOffsetY = 0;
-    //     ShortcutMenuHeader.addEventListener("mousedown", (e) => {
-    //         isMenuDragging = true;
-    //         menuOffsetX = e.clientX - createShortcutMenu.getBoundingClientRect().left;
-    //         menuOffsetY = e.clientY - createShortcutMenu.getBoundingClientRect().top;
-    //         createShortcutMenu.style.transition = "none"; // Disable transition during dragging
-    //     }
-    //     );
-    //     document.addEventListener("mousemove", (e) => {
-    //         if (isMenuDragging) {
-    //             createShortcutMenu.style.left = `${e.clientX - menuOffsetX}px`;
-    //             createShortcutMenu.style.top = `${e.clientY - menuOffsetY}px`;
-    //         }
-    //     });
-    //     document.addEventListener("mouseup", () => {
-    //         isMenuDragging = false;
-    //         createShortcutMenu.style.transition = "all 0.3s ease"; // Re-enable transition after dragging
-    //     }
-    // );
 
 });
 
