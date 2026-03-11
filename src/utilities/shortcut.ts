@@ -2,17 +2,19 @@ import "./shortcut_styles.css"
 
 
 function saveShortcut(name: string, url: string) {
-    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]"); //This is how strings get stored! Getting shorcuts
-    shortcuts.push({ name, url }); //add shortcut to in-memory, not stored
+    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name: string; url: string; id: string }[];
+    const id = Date.now().toString();
+    shortcuts.push({ name, url, id }); //add shortcut to in-memory, not stored
     localStorage.setItem("shortcuts", JSON.stringify(shortcuts)); //finally stored
+    return id;
 }
 
 function loadShortcuts() {
-    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as  { name: string; url: string }[]; //basically saying "hey, all shortcuts have url and name"
+    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as  { name: string; url: string; id: string }[]; //basically saying "hey, all shortcuts have url and name"
     const shortcutMemory = document.getElementById("shortcuts_list") as HTMLDivElement; //basically "trust me its a div bro"
     shortcutMemory.innerHTML = ""; //empty
     shortcuts.forEach(s => {
-        shortcutMemory?.appendChild(makeAShortcut(s.name, s.url)); //"get" all the links back from memory 
+        shortcutMemory?.appendChild(makeAShortcut(s.name, s.url, s.id)); //"get" all the links back from memory 
     });
 }
 
@@ -26,12 +28,13 @@ function closeMenu(){
     menu.remove();
 }
 
-function makeAShortcut(name:string, url:string){
+function makeAShortcut(name:string, url:string, id:string){
     const shortcutLink = document.createElement("a");
-    shortcutLink.id = "shortcut_link";
+    shortcutLink.className = "shortcut_link";
     shortcutLink.href = url;
     shortcutLink.text = name;
     shortcutLink.textContent = name;
+    shortcutLink.dataset.shortcutId = id;
 
     const linkHolder = document.createElement("div");
     linkHolder.id = "link_holder"
@@ -58,8 +61,8 @@ function makeAShortcut(name:string, url:string){
     deleteShortcut.addEventListener("click", (event)=>{
         event.preventDefault();
         event.stopPropagation();
-        const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
-        const updated = shortcuts.filter(shortcut => !(shortcut.name === name && shortcut.url === url));
+        const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
+        const updated = shortcuts.filter(shortcut => shortcut.id !== id);
         localStorage.setItem("shortcuts", JSON.stringify(updated));
         loadShortcuts();
     });
@@ -193,11 +196,11 @@ function createMenu(){
     createShortcutMenuButton.addEventListener("click", () => {
     const shortcutName = (document.getElementById("sc_name") as HTMLInputElement).value;
     const shortcutURL = (document.getElementById("sc_url") as HTMLInputElement).value;
-    let newLink = makeAShortcut(shortcutName, shortcutURL);
+    const id = saveShortcut(shortcutName, shortcutURL);
+    const newLink = makeAShortcut(shortcutName, shortcutURL, id);
     const SCList = document.getElementById("shortcuts_list");
 
     SCList?.appendChild(newLink);
-    saveShortcut(shortcutName,shortcutURL);
     closeMenu();
 });
 
