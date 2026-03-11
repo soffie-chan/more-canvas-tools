@@ -27,8 +27,6 @@ function closeMenu(){
 }
 
 function makeAShortcut(name:string, url:string){
-    //const menu = (document.getElementById("shortcut_menu") as HTMLElement);
-    //const menuStuff = (document.getElementById("create_shortcut") as HTMLElement);
     const shortcutLink = document.createElement("a");
     shortcutLink.id = "shortcut_link";
     shortcutLink.href = url;
@@ -46,10 +44,6 @@ function makeAShortcut(name:string, url:string){
     const editShortcut = document.createElement("button");
     editShortcut.id = "shortcut_edit_button";
     editShortcut.textContent = "✎";
-
-    linkHolder.appendChild(shortcutLink);
-    linkHolder.appendChild(editShortcut);
-    linkHolder.appendChild(deleteShortcut);
 
     linkHolder.addEventListener("mouseenter", () => {
         deleteShortcut.style.display = "inline-block";
@@ -71,17 +65,55 @@ function makeAShortcut(name:string, url:string){
     });
 
     editShortcut.addEventListener("click", (event)=>{
-        event.preventDefault();
-        event.stopPropagation();
-        const newName = prompt("Edit shortcut name:", name);
-        const newUrl = prompt("Edit shortcut URL:", url);
-        if (!newName || !newUrl) return;
-        const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
-        const updated = shortcuts.map(shortcut => shortcut.name === name && shortcut.url === url ? {name:newName,url:newUrl} : shortcut);
-        localStorage.setItem("shortcuts", JSON.stringify(updated));
-        loadShortcuts();
-    });
+        
+        // event.preventDefault();
+        // event.stopPropagation();
+        const EditMenuContent = document.createElement("div");
+        EditMenuContent.id = "edit_shortcut_menu"
+        document.body.appendChild(EditMenuContent)
 
+        EditMenuContent.innerHTML = `
+            <div id="edit_shortcut_menu">
+                <div style="padding: 10px;">
+                    <strong>Edit Shortcut</strong>
+                </div>
+            <form>
+                <label for="edit_sc_name">Shortcut Name</label>
+                <input type="text" id="edit_sc_name" name="Edit_Shortcut_Name"><br><br>
+                <label for="edit_sc_url">Shortcut URL</label>
+                <input type="url" id="edit_sc_url" name="Edit_Shortcut_URL"><br><br>
+            </form>
+            <button id=save_edit>Save</button>
+            <button id=cancel_edit>Cancel</button>
+            </div>
+        </div>
+        `;
+        const editNameBar = EditMenuContent.querySelector<HTMLInputElement>("#edit_sc_name")!;;
+        editNameBar.value = name;
+        const editURLBar = EditMenuContent.querySelector<HTMLInputElement>("#edit_sc_url")!;
+        editURLBar.value = url;
+
+        const SaveEditButton = EditMenuContent.querySelector<HTMLButtonElement>("#save_edit")!;
+        SaveEditButton.addEventListener("click", (e)=>{
+                    if (!editNameBar.value || !editURLBar.value) return;
+
+            console.log("hiiiii")
+        });
+        const CancelEditButton = EditMenuContent.querySelector<HTMLButtonElement>("#cancel_edit")!;
+        CancelEditButton.addEventListener("click", (e)=>{
+            EditMenuContent.remove();
+        });
+
+        // if (!newName || !newUrl) return;
+        // const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
+        // const updated = shortcuts.map(shortcut => shortcut.name === name && shortcut.url === url ? {name:newName,url:newUrl} : shortcut);
+        // localStorage.setItem("shortcuts", JSON.stringify(updated));
+        // loadShortcuts();
+        //editShortcut.appendChild(EditMenuContent)
+    });
+    linkHolder.appendChild(shortcutLink);
+    linkHolder.appendChild(editShortcut);
+    linkHolder.appendChild(deleteShortcut);
     return linkHolder;
 }
 
@@ -137,7 +169,7 @@ function createMenu(){
         <div style="padding: 15px;" id = close_menu>
             <button id>Cancel</button>
         </div>
-    `
+    `;
 
     document.body.appendChild(createShortcutMenu);
     createShortcutMenu.appendChild(ShortcutMenuHeader);

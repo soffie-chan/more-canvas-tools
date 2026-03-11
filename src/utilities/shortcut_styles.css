@@ -28,7 +28,7 @@
     bottom: 100px;
     width: 250px;
     right: 400px;
-    height: 450px;
+    height: 550px;
     color: "blue";
     background: #ffffff;
     border-radius: 8px;
@@ -81,12 +81,14 @@
 
 #shortcut_content{
     display : flex;
+    flex-direction: column;
+
 }
 
 #shortcuts_list{
     padding: 10px;
-    flex-direction: column;
     display: flex;
+    flex-direction: column;
     height: 420px;
     background: white;
     overflow-y: auto;
@@ -97,7 +99,23 @@
     position: relative;
     width: 100%;
     background: white;
-    border: 1px solid #2974B3;
-    margin-top: 10px;
+    box-sizing: border-box;
     border-radius: 4px;
+}
+
+#edit_shortcut_menu{
+    position :fixed;
+    bottom: 100px;
+    width: 250px;
+    right: 400px;
+    height: 550px;
+    color: "blue";
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
