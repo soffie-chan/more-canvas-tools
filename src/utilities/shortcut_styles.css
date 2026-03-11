@@ -1,0 +1,103 @@
+#shortcut_link{
+    color : lab(0% 0 0);
+    flex : 1;
+    text-decoration: none;
+}
+
+#link_holder{
+    display : flex;
+    align-items : center;
+    justify-content: space-between;
+    padding : 6px 8px;
+    border-bottom: 1px solid #e0e0e0;
+    background : #ffffff;
+}
+
+#shortcut_delete_button{
+    margin-left: 6px;
+    display:none;
+}
+
+#shortcut_edit_button{
+    margin-left: 6px;
+    display:none;
+}
+
+#shortcut_menu{
+    position :fixed;
+    bottom: 100px;
+    width: 250px;
+    right: 400px;
+    height: 450px;
+    color: "blue";
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#shortcut_container{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width:250px;
+    height: 550px;
+    background: #095320;
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+    padding: 10px;
+    font-size:  16px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    cursor: move;
+}
+
+#shortcut_header{
+    position:relative;
+    width: 100%;
+    
+}
+
+#shortcut_menu_button{
+    position:relative;
+    width: 100%;
+    background: white;
+    margin-top: 10px;
+}
+
+#close_shortcut_menu_button{
+    position:relative;
+    width: 100%;
+    background: white;
+    margin-top: 30px;
+
+}
+
+#shortcut_content{
+    display : flex;
+}
+
+#shortcuts_list{
+    padding: 10px;
+    flex-direction: column;
+    display: flex;
+    height: 420px;
+    background: white;
+    overflow-y: auto;
+    text-align: left;
+}
+
+#shortcut_button{
+    position: relative;
+    width: 100%;
+    background: white;
+    border: 1px solid #2974B3;
+    margin-top: 10px;
+    border-radius: 4px;
+}

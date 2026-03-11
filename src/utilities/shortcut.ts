@@ -1,3 +1,5 @@
+import "./shortcut_styles.css"
+
 
 function saveShortcut(name: string, url: string) {
     const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]"); //This is how strings get stored! Getting shorcuts
@@ -14,48 +16,36 @@ function loadShortcuts() {
     });
 }
 
-function clearALLShortcuts(){ //FOR DEBUGGING
-    localStorage.setItem("shortcuts", JSON.stringify([]));
-    loadShortcuts();
-}
+// function clearALLShortcuts(){ //FOR DEBUGGING
+//     localStorage.setItem("shortcuts", JSON.stringify([]));
+//     loadShortcuts();
+// }
+
 function closeMenu(){
     const menu = (document.getElementById("shortcut_menu") as HTMLDivElement);
     menu.remove();
-    
 }
 
 function makeAShortcut(name:string, url:string){
     //const menu = (document.getElementById("shortcut_menu") as HTMLElement);
     //const menuStuff = (document.getElementById("create_shortcut") as HTMLElement);
     const shortcutLink = document.createElement("a");
+    shortcutLink.id = "shortcut_link";
     shortcutLink.href = url;
     shortcutLink.text = name;
     shortcutLink.textContent = name;
-    shortcutLink.id = "shortcut_link";
-    shortcutLink.style.color = "#003366";
-    shortcutLink.style.textDecoration = "none";
-    shortcutLink.style.flex = "1";
 
     const linkHolder = document.createElement("div");
+    linkHolder.id = "link_holder"
     linkHolder.className = "shortcut_item_container";
-    linkHolder.style.display = "flex";
-    linkHolder.style.alignItems = "center";
-    linkHolder.style.justifyContent = "space-between";
-    linkHolder.style.padding = "6px 8px";
-    linkHolder.style.borderBottom = "1px solid #e0e0e0";
-    linkHolder.style.background = "#fff";
 
     const deleteShortcut = document.createElement("button");
     deleteShortcut.id = "shortcut_delete_button";
     deleteShortcut.textContent = "X";
-    deleteShortcut.style.marginLeft = "6px";
-    deleteShortcut.style.display = "none";
 
     const editShortcut = document.createElement("button");
     editShortcut.id = "shortcut_edit_button";
     editShortcut.textContent = "✎";
-    editShortcut.style.marginLeft = "6px";
-    editShortcut.style.display = "none";
 
     linkHolder.appendChild(shortcutLink);
     linkHolder.appendChild(editShortcut);
@@ -103,38 +93,17 @@ function createMenu(){
     const createShortcutMenu = document.createElement("div");
     createShortcutMenu.id = "shortcut_menu";
 
-    createShortcutMenu.style.position = "fixed";
-    createShortcutMenu.style.bottom = "100px";
-    createShortcutMenu.style.right = "400px";
-    createShortcutMenu.style.width = "250px";
-    createShortcutMenu.style.height = "450px";
-    createShortcutMenu.style.background = "#ffffff";
-    createShortcutMenu.style.color = "#003366";   
-    createShortcutMenu.style.borderRadius = "8px";
-    createShortcutMenu.style.padding = "10px";
-    createShortcutMenu.style.fontSize = "16px";
-    createShortcutMenu.style.fontWeight = "bold";
-    createShortcutMenu.style.textAlign = "center";
-    createShortcutMenu.style.zIndex = "10000";
-    createShortcutMenu.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
     //Create Shortcut in Menu Button
     const createShortcutMenuButton = document.createElement("div");
-    createShortcutMenuButton.style.position = "relative";
-    createShortcutMenuButton.style.width = "100%";
-    createShortcutMenuButton.style.background = "#ffffff";
-    createShortcutMenuButton.style.marginTop = "10px";
+    createShortcutMenuButton.id = "shortcut_menu_button"
+
     //Cancel Shortcut in Menu Button
     const closeShortcutMenuButton = document.createElement("div");
-    createShortcutMenuButton.style.position = "relative";
-    createShortcutMenuButton.style.width = "100%";
-    createShortcutMenuButton.style.background = "#ffffff";
-    createShortcutMenuButton.style.marginTop = "40px";
+    closeShortcutMenuButton.id = "close_shortcut_menu_button"
 
       //shortcut header
     const ShortcutMenuHeader = document.createElement("div");
     ShortcutMenuHeader.id = "shortcut_header";
-    ShortcutMenuHeader.style.position = "relative";
-    ShortcutMenuHeader.style.width = "100%";
 
     //shortcut content
     const ShortcutMenuContent = document.createElement("div");
@@ -204,57 +173,23 @@ function createMenu(){
 
 
 function Shortcutswindow() { //This function is called
-
-    
     //CSS
     //container
     const ShortcutContainer = document.createElement("div");
     ShortcutContainer.id = "shortcut_container";
-    ShortcutContainer.style.position = "fixed";
-    ShortcutContainer.style.bottom = "20px";
-    ShortcutContainer.style.right = "20px";
-    ShortcutContainer.style.width = "250px";
-    ShortcutContainer.style.height = "550px";
-    ShortcutContainer.style.background = "#003366";
-    ShortcutContainer.style.color = "white";   
-    ShortcutContainer.style.borderRadius = "8px";
-    ShortcutContainer.style.padding = "10px";
-    ShortcutContainer.style.fontSize = "16px";
-    ShortcutContainer.style.fontWeight = "bold";
-    ShortcutContainer.style.textAlign = "center";
-    ShortcutContainer.style.zIndex = "9999";
-    ShortcutContainer.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
     ShortcutContainer.draggable = true;
-    ShortcutContainer.style.cursor = "move";
 
     //shortcut header
     const ShortcutHeader = document.createElement("div");
     ShortcutHeader.id = "shortcut_header";
-    ShortcutHeader.style.position = "relative";
-    ShortcutHeader.style.width = "100%";
-  
-
     
     //Shortcut Button
     const shortcutButton = document.createElement("div");
     shortcutButton.id = "shortcut_button";
-    shortcutButton.style.position = "relative";
-    shortcutButton.style.width = "100%";
-    shortcutButton.style.background = "#ffffff";
-    shortcutButton.style.border = "1px solid #2974B3";
-    shortcutButton.style.marginTop = "10px";
-    shortcutButton.style.borderRadius = "4px";
+
     //Shortcuts List
     const shortcutsList = document.createElement("div")
     shortcutsList.id = "shortcuts_list";
-
-    shortcutsList.style.padding = "10px"
-    shortcutsList.style.flexDirection = "column"
-    shortcutsList.style.display = "flex"
-    shortcutsList.style.height = "420px";
-    shortcutsList.style.background = "#ffffff";
-    shortcutsList.style.overflowY = "auto";
-    shortcutsList.style.textAlign = "left";
 
     const ShortcutContent = document.createElement("div");
     ShortcutContent.id = "shortcut_content";
@@ -298,11 +233,6 @@ function Shortcutswindow() { //This function is called
         minimizeButton.textContent = isMinimized ? "+" : "−";
         ShortcutContainer.style.height = isMinimized ? "40px" : "550px";
     });
-
-
-    //Set proper display for ShortcutContent
-    ShortcutContent.style.display = "flex";
-    ShortcutContent.style.flexDirection = "column";
 
     //DRAGGABLE FUNCTIONALITY
     let isDragging = false;
