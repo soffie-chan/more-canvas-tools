@@ -1,4 +1,3 @@
-import { startDialog } from "~src/canvas/dialog";
 
 function saveShortcut(name: string, url: string) {
     const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]"); //This is how strings get stored! Getting shorcuts
@@ -205,6 +204,8 @@ function createMenu(){
 
 
 function Shortcutswindow() { //This function is called
+
+    
     //CSS
     //container
     const ShortcutContainer = document.createElement("div");
@@ -297,6 +298,7 @@ function Shortcutswindow() { //This function is called
         minimizeButton.textContent = isMinimized ? "+" : "−";
         ShortcutContainer.style.height = isMinimized ? "40px" : "550px";
     });
+
 
     //Set proper display for ShortcutContent
     ShortcutContent.style.display = "flex";
