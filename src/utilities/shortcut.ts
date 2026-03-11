@@ -1,4 +1,3 @@
-import { startDialog } from "~src/canvas/dialog";
 
 function saveShortcut(name: string, url: string) {
     const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]"); //This is how strings get stored! Getting shorcuts
@@ -32,32 +31,68 @@ function makeAShortcut(name:string, url:string){
     shortcutLink.href = url;
     shortcutLink.text = name;
     shortcutLink.textContent = name;
-    shortcutLink.id = "shortcut_link"
-    //HERE
+    shortcutLink.id = "shortcut_link";
+    shortcutLink.style.color = "#003366";
+    shortcutLink.style.textDecoration = "none";
+    shortcutLink.style.flex = "1";
+
     const linkHolder = document.createElement("div");
+    linkHolder.className = "shortcut_item_container";
+    linkHolder.style.display = "flex";
+    linkHolder.style.alignItems = "center";
+    linkHolder.style.justifyContent = "space-between";
+    linkHolder.style.padding = "6px 8px";
+    linkHolder.style.borderBottom = "1px solid #e0e0e0";
+    linkHolder.style.background = "#fff";
 
-    const deleteShortcut = document.createElement("button")
-    deleteShortcut.id = "shortcut_delete_button"
+    const deleteShortcut = document.createElement("button");
+    deleteShortcut.id = "shortcut_delete_button";
     deleteShortcut.textContent = "X";
+    deleteShortcut.style.marginLeft = "6px";
+    deleteShortcut.style.display = "none";
 
-    const editShortcut = document.createElement("button")
-    editShortcut.id = "shortcut_edit_button"
+    const editShortcut = document.createElement("button");
+    editShortcut.id = "shortcut_edit_button";
     editShortcut.textContent = "✎";
+    editShortcut.style.marginLeft = "6px";
+    editShortcut.style.display = "none";
 
-    //Hover animations
-    shortcutLink.addEventListener("mouseover", (e)=>{
-        if(document.getElementById("shortcut_delete_button")) return;
-        if(document.getElementById("shortcut_edit_button")) return;
-        shortcutLink.appendChild(deleteShortcut);
-        shortcutLink.appendChild(editShortcut)
+    linkHolder.appendChild(shortcutLink);
+    linkHolder.appendChild(editShortcut);
+    linkHolder.appendChild(deleteShortcut);
+
+    linkHolder.addEventListener("mouseenter", () => {
+        deleteShortcut.style.display = "inline-block";
+        editShortcut.style.display = "inline-block";
     });
 
-    shortcutLink.addEventListener("mouseout",(e)=>{
-        shortcutLink.removeChild(deleteShortcut)
-        shortcutLink.removeChild(editShortcut)
-    })
+    linkHolder.addEventListener("mouseleave", () => {
+        deleteShortcut.style.display = "none";
+        editShortcut.style.display = "none";
+    });
 
-    return shortcutLink;
+    deleteShortcut.addEventListener("click", (event)=>{
+        event.preventDefault();
+        event.stopPropagation();
+        const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
+        const updated = shortcuts.filter(shortcut => !(shortcut.name === name && shortcut.url === url));
+        localStorage.setItem("shortcuts", JSON.stringify(updated));
+        loadShortcuts();
+    });
+
+    editShortcut.addEventListener("click", (event)=>{
+        event.preventDefault();
+        event.stopPropagation();
+        const newName = prompt("Edit shortcut name:", name);
+        const newUrl = prompt("Edit shortcut URL:", url);
+        if (!newName || !newUrl) return;
+        const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
+        const updated = shortcuts.map(shortcut => shortcut.name === name && shortcut.url === url ? {name:newName,url:newUrl} : shortcut);
+        localStorage.setItem("shortcuts", JSON.stringify(updated));
+        loadShortcuts();
+    });
+
+    return linkHolder;
 }
 
 function createMenu(){
@@ -169,6 +204,8 @@ function createMenu(){
 
 
 function Shortcutswindow() { //This function is called
+
+    
     //CSS
     //container
     const ShortcutContainer = document.createElement("div");
@@ -261,6 +298,7 @@ function Shortcutswindow() { //This function is called
         minimizeButton.textContent = isMinimized ? "+" : "−";
         ShortcutContainer.style.height = isMinimized ? "40px" : "550px";
     });
+
 
     //Set proper display for ShortcutContent
     ShortcutContent.style.display = "flex";
