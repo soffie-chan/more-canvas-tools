@@ -1,3 +1,4 @@
+import { addFileButton, createFileButton, createFileMenu, loadFiles } from "./shortcut_files";
 import "./shortcut_styles.css"
 
 
@@ -64,7 +65,7 @@ function makeAShortcut(name:string, url:string, id:string){
         const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
         const updated = shortcuts.filter(shortcut => shortcut.id !== id);
         localStorage.setItem("shortcuts", JSON.stringify(updated));
-        loadShortcuts();
+        //loadShortcuts();
     });
 
     editShortcut.addEventListener("click", (event)=>{
@@ -249,7 +250,21 @@ function Shortcutswindow() { //This function is called
         </div>
     `;
 
-    
+    createFileButton();
+    addFileButton.addEventListener("click", () => {
+        const file = document.createElement("div")
+        ShortcutContent.appendChild(file);
+        createFileMenu();
+
+        file.innerHTML = `
+        <div style="padding: 15px;" id = link_file>
+            Hi im a div lol
+        </div>
+        `;
+        file.textContent = "hi im a file :D"
+        const SCList = document.getElementById("shortcuts_list");
+        SCList?.appendChild(file);
+    });
 
     //CALLS AND IDS
     shortcutsList.id = "shortcuts_list";
@@ -258,8 +273,10 @@ function Shortcutswindow() { //This function is called
     ShortcutContainer.appendChild(ShortcutContent);
     ShortcutContent.appendChild(shortcutsList)
     ShortcutContent.appendChild(shortcutButton);
+    ShortcutContent.appendChild(addFileButton)
     //clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
     loadShortcuts();
+    //loadFiles();
 
     //COLLAPSIBLE FUNCTIONALITY
     let isMinimized = false;
@@ -292,11 +309,7 @@ function Shortcutswindow() { //This function is called
         isDragging = false;
         ShortcutContainer.style.transition = "all 0.3s ease"; // Re-enable transition after dragging
     });
-
-
-
 }
-
 
 
 //INJECTION CALL

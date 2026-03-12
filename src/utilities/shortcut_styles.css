@@ -4,6 +4,12 @@
     text-decoration: none;
 }
 
+#new_file{
+    color : lab(0% 0 0);
+    flex : 1;
+    text-decoration: none;
+}
+
 #link_holder{
     display : flex;
     align-items : center;
@@ -68,7 +74,6 @@
     position:relative;
     width: 100%;
     background: white;
-    margin-top: 10px;
 }
 
 #close_shortcut_menu_button{
@@ -105,6 +110,23 @@
 }
 
 #edit_shortcut_menu{
+    position :fixed;
+    bottom: 100px;
+    width: 250px;
+    right: 400px;
+    height: 550px;
+    color: "blue";
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#file_menu{
     position :fixed;
     bottom: 100px;
     width: 250px;
