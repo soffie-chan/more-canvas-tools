@@ -68,9 +68,7 @@ function makeAShortcut(name:string, url:string, id:string){
     });
 
     editShortcut.addEventListener("click", (event)=>{
-        
-        // event.preventDefault();
-        // event.stopPropagation();
+        if (document.getElementById("edit_shortcut_menu")) return //prevent spam
         const EditMenuContent = document.createElement("div");
         EditMenuContent.id = "edit_shortcut_menu"
         document.body.appendChild(EditMenuContent)
@@ -98,9 +96,13 @@ function makeAShortcut(name:string, url:string, id:string){
 
         const SaveEditButton = EditMenuContent.querySelector<HTMLButtonElement>("#save_edit")!;
         SaveEditButton.addEventListener("click", (e)=>{
-                    if (!editNameBar.value || !editURLBar.value) return;
+            if (!editNameBar.value || !editURLBar.value) return;
+            const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
+            const updated = shortcuts.map(shortcut => shortcut.name === name && shortcut.url === url ? {name:editNameBar.value,url:editURLBar.value} : shortcut);
+            localStorage.setItem("shortcuts", JSON.stringify(updated));
+            loadShortcuts();
+            EditMenuContent.remove();
 
-            console.log("hiiiii")
         });
         const CancelEditButton = EditMenuContent.querySelector<HTMLButtonElement>("#cancel_edit")!;
         CancelEditButton.addEventListener("click", (e)=>{
