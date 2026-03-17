@@ -1,4 +1,4 @@
-import { addFileButton, createFileButton, createFileMenu, loadFiles } from "./shortcut_files";
+import { addFileButton, createFileMenu, loadFiles } from "./shortcut_files";
 import "./shortcut_styles.css"
 
 
@@ -40,6 +40,8 @@ function makeAShortcut(name:string, url:string, id:string){
     const linkHolder = document.createElement("div");
     linkHolder.id = "link_holder"
     linkHolder.className = "shortcut_item_container";
+    linkHolder.draggable = true;
+    linkHolder.dataset.shortcutId = id;
 
     const deleteShortcut = document.createElement("button");
     deleteShortcut.id = "shortcut_delete_button";
@@ -65,7 +67,7 @@ function makeAShortcut(name:string, url:string, id:string){
         const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
         const updated = shortcuts.filter(shortcut => shortcut.id !== id);
         localStorage.setItem("shortcuts", JSON.stringify(updated));
-        //loadShortcuts();
+        loadShortcuts();
     });
 
     editShortcut.addEventListener("click", (event)=>{
@@ -223,7 +225,7 @@ function Shortcutswindow() { //This function is called
     
     //Shortcut Button
     const shortcutButton = document.createElement("div");
-    shortcutButton.id = "shortcut_button";
+    shortcutButton.id = "shortcut_buttons";
 
     //Shortcuts List
     const shortcutsList = document.createElement("div")
@@ -245,12 +247,13 @@ function Shortcutswindow() { //This function is called
     `;
     //Shortcut Button
     shortcutButton.innerHTML = `
-        <div style="padding: 15px;" id = shortcut_button>
-            <button id>Add Shortcut</button>
+        <div style="padding: 15px;" id = shortcut_buttons>
+            <button id = "shortcut_button">Add Shortcut</button>
+
+            <button id = "add_file_button">Add File</button>
         </div>
     `;
 
-    createFileButton();
     addFileButton.addEventListener("click", () => {
         const file = document.createElement("div")
         ShortcutContent.appendChild(file);
@@ -273,7 +276,7 @@ function Shortcutswindow() { //This function is called
     ShortcutContainer.appendChild(ShortcutContent);
     ShortcutContent.appendChild(shortcutsList)
     ShortcutContent.appendChild(shortcutButton);
-    ShortcutContent.appendChild(addFileButton)
+    // ShortcutContent.appendChild(addFileButton)
     //clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
     loadShortcuts();
     //loadFiles();
@@ -294,8 +297,8 @@ function Shortcutswindow() { //This function is called
     let offsetY = 0;
     ShortcutHeader.addEventListener("mousedown", (e) => {
         isDragging = true;
-        offsetX = e.clientX - ShortcutContainer.getBoundingClientRect().left;
-        offsetY = e.clientY - ShortcutContainer.getBoundingClientRect().top;
+        offsetX = e.clientX - ShortcutHeader.getBoundingClientRect().left;
+        offsetY = e.clientY - ShortcutHeader.getBoundingClientRect().top;
         ShortcutContainer.style.transition = "none"; // Disable transition during dragging
     }
     );
@@ -309,6 +312,7 @@ function Shortcutswindow() { //This function is called
         isDragging = false;
         ShortcutContainer.style.transition = "all 0.3s ease"; // Re-enable transition after dragging
     });
+
 }
 
 
@@ -317,4 +321,5 @@ export function injectShortcut() {
     Shortcutswindow();
     console.log(document.querySelectorAll("#shortcut_menu").length);
     $("#shortcut_button").on("click", () => createMenu());
+    $("#add_file_button").on("click", () => {createFileMenu()});
 }

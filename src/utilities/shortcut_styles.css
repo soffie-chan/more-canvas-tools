@@ -17,6 +17,21 @@
     padding : 6px 8px;
     border-bottom: 1px solid #e0e0e0;
     background : #ffffff;
+    cursor: grab;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+#link_holder:active {
+    cursor: grabbing;
+}
+
+.shortcut_item_container.dragging {
+    opacity: 0.5 !important;
+    background-color: #f0f0f0;
+}
+
+.shortcut_item_container:hover {
+    background-color: #f9f9f9;
 }
 
 #shortcut_delete_button{
@@ -100,7 +115,7 @@
     text-align: left;
 }
 
-#shortcut_button{
+#shortcut_buttons{
     position: relative;
     width: 100%;
     background: white;

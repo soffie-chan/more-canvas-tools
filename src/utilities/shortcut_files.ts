@@ -14,14 +14,7 @@ export function loadFiles() {
 }
 export const addFileButton = document.createElement("div");
 
-export function createFileButton(){
-    addFileButton.innerHTML = `
-        <div style="padding: 15px;" id = add_file_button>
-            <button id>Add File</button>
-        </div>
-    `;
-    if (document.getElementById("file_menu")) return;
-}
+
 
 export const newFile = document.createElement("div")
 export function createFile(filename: string){
