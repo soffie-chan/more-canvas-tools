@@ -11,7 +11,10 @@ export function loadFiles() {
     files.forEach(f => {
         shortcutMemory?.appendChild(createFile(f.filename)); //"get" all the links back from memory 
     });
+    console.log(files);
 }
+
+
 export const addFileButton = document.createElement("div");
 
 
@@ -26,7 +29,7 @@ export function createFile(filename: string){
     // const Files = JSON.parse(localStorage.getItem("files") || "[]") as { name:string, contents:[] }[];
     // Files.push({ name }); //add shortcut to in-memory, not stored
     // localStorage.setItem("shortcuts", JSON.stringify(shortcuts)); //finally stored
-    newFile.id = "shortcut_link";
+    newFile.id = "shortcuts_list";
     newFile.textContent = "🗁 " + filename;
     return newFile;
 }

@@ -1,4 +1,4 @@
-import { addFileButton, createFileMenu, loadFiles } from "./shortcut_files";
+import { addFileButton, createFile, createFileMenu } from "./shortcut_files";
 import "./shortcut_styles.css"
 
 
@@ -13,16 +13,17 @@ function saveShortcut(name: string, url: string) {
 function loadShortcuts() {
     const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as  { name: string; url: string; id: string }[]; //basically saying "hey, all shortcuts have url and name"
     const shortcutMemory = document.getElementById("shortcuts_list") as HTMLDivElement; //basically "trust me its a div bro"
-    shortcutMemory.innerHTML = ""; //empty
+   // shortcutMemory.innerHTML = ""; //empty
     shortcuts.forEach(s => {
         shortcutMemory?.appendChild(makeAShortcut(s.name, s.url, s.id)); //"get" all the links back from memory 
     });
+
 }
 
-// function clearALLShortcuts(){ //FOR DEBUGGING
-//     localStorage.setItem("shortcuts", JSON.stringify([]));
-//     loadShortcuts();
-// }
+function clearALLShortcuts(){ //FOR DEBUGGING
+    localStorage.setItem("shortcuts", JSON.stringify([]));
+    loadShortcuts();
+}
 
 function closeMenu(){
     const menu = (document.getElementById("shortcut_menu") as HTMLDivElement);
@@ -208,7 +209,6 @@ function createMenu(){
     SCList?.appendChild(newLink);
     closeMenu();
 });
-
 }
 
 
@@ -276,19 +276,32 @@ function Shortcutswindow() { //This function is called
     ShortcutContainer.appendChild(ShortcutContent);
     ShortcutContent.appendChild(shortcutsList)
     ShortcutContent.appendChild(shortcutButton);
-    // ShortcutContent.appendChild(addFileButton)
     //clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
     loadShortcuts();
-    //loadFiles();
+    // loadFiles(); //loads files into the shortcut menu, similar to loadShortcuts but for files instead of links
+
 
     //COLLAPSIBLE FUNCTIONALITY
-    let isMinimized = false;
+    // Load the saved minimized state from local storage
+    const savedMinimizedState = localStorage.getItem("shortcutMinimized") === "true";
+    let isMinimized = savedMinimizedState;
+    
+    // Apply the saved state to the UI on page load
+    if (isMinimized) {
+        ShortcutContent.style.display = "none";
+        ShortcutContainer.style.height = "40px";
+        const minimizeButton = document.getElementById("minimize_shortcuts") as HTMLButtonElement;
+        minimizeButton.textContent = "+";
+    }
+    
     const minimizeButton = document.getElementById("minimize_shortcuts") as HTMLButtonElement;
     minimizeButton.addEventListener("click", () => {
         isMinimized = !isMinimized;
         ShortcutContent.style.display = isMinimized ? "none" : "flex";
         minimizeButton.textContent = isMinimized ? "+" : "−";
         ShortcutContainer.style.height = isMinimized ? "40px" : "550px";
+        // Save the minimized state to local storage
+        localStorage.setItem("shortcutMinimized", isMinimized.toString());
     });
 
     //DRAGGABLE FUNCTIONALITY
