@@ -8,6 +8,7 @@
     color : lab(0% 0 0);
     flex : 1;
     text-decoration: none;
+    padding: 10px;
 }
 
 #link_holder{
@@ -102,20 +103,27 @@
 #shortcut_content{
     display : flex;
     flex-direction: column;
-
+    overflow-y: auto;
+    max-height: 500px;
 }
 
 #shortcuts_list{
     padding: 10px;
     display: flex;
     flex-direction: column;
-    height: 420px;
     background: white;
-    overflow-y: auto;
     text-align: left;
 }
 
-#shortcut_buttons{
+#files_list{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    background: rgb(126, 220, 132);
+    text-align: left;
+}
+
+.shortcut-buttons{
     position: relative;
     width: 100%;
     background: white;

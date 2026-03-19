@@ -1,23 +1,47 @@
-import { addFileButton, createFile, createFileMenu } from "./shortcut_files";
+import { addFileButton, createFile, createFileMenu, fileStore, shortcutMenuDropdown } from "./shortcut_files";
 import "./shortcut_styles.css"
+import "./shortcut_files"
+import { file } from "jszip";
 
 
-function saveShortcut(name: string, url: string) {
-    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name: string; url: string; id: string }[];
+function saveShortcut(name: string, url: string, fileIndex?:number) {
     const id = Date.now().toString();
-    shortcuts.push({ name, url, id }); //add shortcut to in-memory, not stored
-    localStorage.setItem("shortcuts", JSON.stringify(shortcuts)); //finally stored
+
+    if(fileIndex === undefined){ //user didn't select  file
+        const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name: string; url: string; id: string }[];
+        shortcuts.push({ name, url, id }); //add shortcut to in-memory, not stored
+        localStorage.setItem("shortcuts", JSON.stringify(shortcuts)); //finally stored
+    }
+    else{
+        const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
+        files[fileIndex].fileContents.push({name, url, id})
+        localStorage.setItem("files", JSON.stringify(files));
+    }
     return id;
 }
 
 function loadShortcuts() {
     const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as  { name: string; url: string; id: string }[]; //basically saying "hey, all shortcuts have url and name"
     const shortcutMemory = document.getElementById("shortcuts_list") as HTMLDivElement; //basically "trust me its a div bro"
-   // shortcutMemory.innerHTML = ""; //empty
+    shortcutMemory.innerHTML = ""; //empty
     shortcuts.forEach(s => {
         shortcutMemory?.appendChild(makeAShortcut(s.name, s.url, s.id)); //"get" all the links back from memory 
     });
-
+}
+function loadFiles(){
+    console.log("loading file...")
+    const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
+    const filesMemory = document.getElementById("files_list") as HTMLDivElement; //basically "trust me its a div bro"
+    filesMemory.innerHTML = "";
+    files.forEach((f, index) => {
+        const file = createFile(f)
+        const linkStorage = file.querySelector("div:nth-child(2)") as HTMLDivElement;
+        (f.fileContents || []).forEach(l=>{
+            linkStorage.appendChild(makeAShortcut(l.name,l.url,l.id, index))
+        })
+        //filesMemory?.appendChild(makeAShortcut(link.name, s.url, s.id)); //"get" all the links back from memory 
+        filesMemory.appendChild(file);
+    });
 }
 
 function clearALLShortcuts(){ //FOR DEBUGGING
@@ -30,7 +54,7 @@ function closeMenu(){
     menu.remove();
 }
 
-function makeAShortcut(name:string, url:string, id:string){
+function makeAShortcut(name:string, url:string, id:string, fileIndex?:number){
     const shortcutLink = document.createElement("a");
     shortcutLink.className = "shortcut_link";
     shortcutLink.href = url;
@@ -65,10 +89,17 @@ function makeAShortcut(name:string, url:string, id:string){
     deleteShortcut.addEventListener("click", (event)=>{
         event.preventDefault();
         event.stopPropagation();
-        const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
-        const updated = shortcuts.filter(shortcut => shortcut.id !== id);
-        localStorage.setItem("shortcuts", JSON.stringify(updated));
+        if (fileIndex !== undefined) {
+            const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
+            files[fileIndex].fileContents = files[fileIndex].fileContents.filter(l => l.id !== id);
+            localStorage.setItem("files", JSON.stringify(files));
+        } else {
+            const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
+            const updated = shortcuts.filter(shortcut => shortcut.id !== id);
+            localStorage.setItem("shortcuts", JSON.stringify(updated));
+        }
         loadShortcuts();
+        loadFiles();
     });
 
     editShortcut.addEventListener("click", (event)=>{
@@ -101,10 +132,17 @@ function makeAShortcut(name:string, url:string, id:string){
         const SaveEditButton = EditMenuContent.querySelector<HTMLButtonElement>("#save_edit")!;
         SaveEditButton.addEventListener("click", (e)=>{
             if (!editNameBar.value || !editURLBar.value) return;
-            const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
-            const updated = shortcuts.map(shortcut => shortcut.name === name && shortcut.url === url ? {name:editNameBar.value,url:editURLBar.value} : shortcut);
-            localStorage.setItem("shortcuts", JSON.stringify(updated));
+            if (fileIndex !== undefined) {
+                const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
+                files[fileIndex].fileContents = files[fileIndex].fileContents.map(l => l.id === id ? {name: editNameBar.value, url: editURLBar.value, id} : l);
+                localStorage.setItem("files", JSON.stringify(files));
+            } else {
+                const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
+                const updated = shortcuts.map(shortcut => shortcut.id === id ? {name:editNameBar.value, url:editURLBar.value, id} : shortcut);
+                localStorage.setItem("shortcuts", JSON.stringify(updated));
+            }
             loadShortcuts();
+            loadFiles();
             EditMenuContent.remove();
 
         });
@@ -142,7 +180,7 @@ function createMenu(){
     const closeShortcutMenuButton = document.createElement("div");
     closeShortcutMenuButton.id = "close_shortcut_menu_button"
 
-      //shortcut header
+    //shortcut header
     const ShortcutMenuHeader = document.createElement("div");
     ShortcutMenuHeader.id = "shortcut_header";
 
@@ -165,18 +203,20 @@ function createMenu(){
                 <label for="sc_url">Shortcut URL</label>
                 <input type="url" id="sc_url" name="Shortcut_URL"><br><br>
             </form>
+            <label for="fileAdd">Add To File</label><br><br>
+                <select id="fileAddMenu"></select>
             </div>
         </div>
     `;
     //Create Shortcut in Menu button
     createShortcutMenuButton.innerHTML = `
-        <div style="padding: 15px;" id = create_shortcut>
-            <button id>Create Shortcut</button>
+        <div style="padding: 15px;" id="create_shortcut">
+            <button id="create_shortcut_button">Create Shortcut</button>
         </div>
     `;
     closeShortcutMenuButton.innerHTML = `
-        <div style="padding: 15px;" id = close_menu>
-            <button id>Cancel</button>
+        <div style="padding: 15px;" id="close_menu">
+            <button id="cancel_shortcut_button">Cancel</button>
         </div>
     `;
 
@@ -185,6 +225,7 @@ function createMenu(){
     createShortcutMenu.appendChild(ShortcutMenuContent);
     createShortcutMenu.appendChild(createShortcutMenuButton);
     createShortcutMenu.appendChild(closeShortcutMenuButton)
+    shortcutMenuDropdown();
 
     //autofill
     const urlBar = document.getElementById("sc_url") as HTMLInputElement;
@@ -202,11 +243,12 @@ function createMenu(){
     createShortcutMenuButton.addEventListener("click", () => {
     const shortcutName = (document.getElementById("sc_name") as HTMLInputElement).value;
     const shortcutURL = (document.getElementById("sc_url") as HTMLInputElement).value;
-    const id = saveShortcut(shortcutName, shortcutURL);
-    const newLink = makeAShortcut(shortcutName, shortcutURL, id);
-    const SCList = document.getElementById("shortcuts_list");
-
-    SCList?.appendChild(newLink);
+    
+    const defVal = (document.getElementById("fileAddMenu") as HTMLSelectElement).value;
+    const fileIndex = defVal === "" ? undefined : Number(defVal);
+    const id = saveShortcut(shortcutName, shortcutURL, fileIndex);
+    loadShortcuts();
+    loadFiles();
     closeMenu();
 });
 }
@@ -234,6 +276,9 @@ function Shortcutswindow() { //This function is called
     const ShortcutContent = document.createElement("div");
     ShortcutContent.id = "shortcut_content";
 
+    const filesList = document.createElement("div");
+    filesList.id = "files_list";
+
     //HTML
     //Shortcuts Panel
     ShortcutHeader.innerHTML = `
@@ -247,8 +292,8 @@ function Shortcutswindow() { //This function is called
     `;
     //Shortcut Button
     shortcutButton.innerHTML = `
-        <div style="padding: 15px;" id = shortcut_buttons>
-            <button id = "shortcut_button">Add Shortcut</button>
+        <div style="padding: 15px;" class="shortcut-buttons">
+            <button id="shortcut_button">Add Shortcut</button>
 
             <button id = "add_file_button">Add File</button>
         </div>
@@ -275,10 +320,12 @@ function Shortcutswindow() { //This function is called
     ShortcutContainer.appendChild(ShortcutHeader);
     ShortcutContainer.appendChild(ShortcutContent);
     ShortcutContent.appendChild(shortcutsList)
+    ShortcutContent.appendChild(filesList)
     ShortcutContent.appendChild(shortcutButton);
     //clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
     loadShortcuts();
-    // loadFiles(); //loads files into the shortcut menu, similar to loadShortcuts but for files instead of links
+    loadFiles();
+    //loadFiles(); //loads files into the shortcut menu, similar to loadShortcuts but for files instead of links
 
 
     //COLLAPSIBLE FUNCTIONALITY
