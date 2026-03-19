@@ -1,26 +1,11 @@
 //import { loadFiles } from "./shortcut";
 
+import { loadFiles } from "./shortcut";
+
 export type fileStore={
     fileName: string;
     fileContents: {name:string, url:string, id:string }[];
 }
-
-
-// export function saveFiles(fileName: string) {
-//     const files = JSON.parse(localStorage.getItem("files") || "[]") as { fileName: string }[];
-//     files.push({ fileName }); //add shortcut to in-memory, not stored
-//     localStorage.setItem("files", JSON.stringify(files)); //finally stored
-// }
-
-// export function loadFiles() {
-//     const files = JSON.parse(localStorage.getItem("files") || "[]") as  { filename: string }[]; //basically saying "hey, all shortcuts have url and name"
-//     const shortcutMemory = document.getElementById("shortcuts_list") as HTMLDivElement; //basically "trust me its a div bro"
-//     shortcutMemory.innerHTML = ""; //empty
-//     files.forEach(f => {
-//         shortcutMemory?.appendChild(createFile(f.filename)); //"get" all the links back from memory 
-//     });
-//     console.log(files);
-// }
 
 
 export const addFileButton = document.createElement("div");
@@ -49,9 +34,19 @@ export function createFile(file: fileStore){
     newFile.id = "new_file";
 
     const fileName = document.createElement("div")
+    fileName.id = "file_name";
     fileName.textContent = "🗁 " + file.fileName;
+    fileName.style.cursor = "pointer";
 
     const linkStorage = document.createElement("div")
+    linkStorage.style.display = "block";
+
+    fileName.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const isCollapsed = linkStorage.style.display === "none";
+        linkStorage.style.display = isCollapsed ? "block" : "none";
+        fileName.textContent = "🗁" + file.fileName;
+    })
 
     newFile.appendChild(fileName);
     newFile.appendChild(linkStorage)
@@ -89,6 +84,7 @@ export function createFileMenu(){
         localStorage.setItem("files", JSON.stringify(files))
         //saveFiles(fileNameBar.value);
         //loadFiles();
+        loadFiles();
         fileMenu.remove();
     });
 
