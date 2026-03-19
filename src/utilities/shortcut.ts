@@ -1,8 +1,6 @@
 import { addFileButton, createFile, createFileMenu, fileStore, shortcutMenuDropdown } from "./shortcut_files";
 import "./shortcut_styles.css"
 import "./shortcut_files"
-import { file } from "jszip";
-
 
 function saveShortcut(name: string, url: string, fileIndex?:number) {
     const id = Date.now().toString();
@@ -28,7 +26,7 @@ function loadShortcuts() {
         shortcutMemory?.appendChild(makeAShortcut(s.name, s.url, s.id)); //"get" all the links back from memory 
     });
 }
-function loadFiles(){
+export function loadFiles(){
     console.log("loading file...")
     const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
     const filesMemory = document.getElementById("files_list") as HTMLDivElement; //basically "trust me its a div bro"
@@ -65,7 +63,7 @@ function makeAShortcut(name:string, url:string, id:string, fileIndex?:number){
     const linkHolder = document.createElement("div");
     linkHolder.id = "link_holder"
     linkHolder.className = "shortcut_item_container";
-    linkHolder.draggable = true;
+    //linkHolder.draggable = true;
     linkHolder.dataset.shortcutId = id;
 
     const deleteShortcut = document.createElement("button");
@@ -259,7 +257,7 @@ function Shortcutswindow() { //This function is called
     //container
     const ShortcutContainer = document.createElement("div");
     ShortcutContainer.id = "shortcut_container";
-    ShortcutContainer.draggable = true;
+    //ShortcutContainer.draggable = true;
 
     //shortcut header
     const ShortcutHeader = document.createElement("div");
