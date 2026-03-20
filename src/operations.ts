@@ -103,7 +103,7 @@ const OPERATIONS: ReadonlyArray<Operation<any>> = [
 
     operation({
         description: "Window for shortcuts to various placing in canvas",
-        condition: () => !(window.location.search.includes("preview")),
+        condition: () => !(window.location.search.includes("preview") && window.location.pathname.includes("preview")),
         action: () => {
             injectShortcut();
         },
