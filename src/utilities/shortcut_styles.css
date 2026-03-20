@@ -11,6 +11,12 @@
     padding: 10px;
 }
 
+#file_name{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 #link_holder{
     display : flex;
     align-items : center;
@@ -35,12 +41,32 @@
     background-color: #f9f9f9;
 }
 
+.file_container.dragging {
+    opacity: 0.5 !important;
+    background-color: #f0f0f0;
+}
+
+.file_container:hover {
+    background-color: #f9f9f9;
+}
+
+
 #shortcut_delete_button{
     margin-left: 6px;
     display:none;
 }
 
 #shortcut_edit_button{
+    margin-left: 6px;
+    display:none;
+}
+
+.file_delete_button{
+    margin-left: 6px;
+    display:none;
+}
+
+.file_edit_button{
     margin-left: 6px;
     display:none;
 }

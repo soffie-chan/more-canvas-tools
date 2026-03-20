@@ -18,7 +18,7 @@ function saveShortcut(name: string, url: string, fileIndex?:number) {
     return id;
 }
 
-function loadShortcuts() {
+export function loadShortcuts() {
     const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as  { name: string; url: string; id: string }[]; //basically saying "hey, all shortcuts have url and name"
     const shortcutMemory = document.getElementById("shortcuts_list") as HTMLDivElement; //basically "trust me its a div bro"
     shortcutMemory.innerHTML = ""; //empty
@@ -27,7 +27,6 @@ function loadShortcuts() {
     });
 }
 export function loadFiles(){
-    console.log("loading file...")
     const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
     const filesMemory = document.getElementById("files_list") as HTMLDivElement; //basically "trust me its a div bro"
     filesMemory.innerHTML = "";
