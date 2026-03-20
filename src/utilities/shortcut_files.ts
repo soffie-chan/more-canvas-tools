@@ -1,6 +1,7 @@
 import { loadFiles, loadShortcuts } from "./shortcut";
 
 export type fileStore={
+    id: string;
     fileName: string;
     fileContents: {name:string, url:string, id:string }[];
 }
@@ -14,7 +15,7 @@ export function shortcutMenuDropdown(){
     select.innerHTML = "";
     const noFileOption = document.createElement("option");
     noFileOption.value = "";
-    noFileOption.textContent = "Add to Shortcuts Menu";
+    noFileOption.textContent = "Add to Files Menu";
     noFileOption.selected = true;
     select.appendChild(noFileOption);
 
@@ -72,7 +73,7 @@ export function createFile(file: fileStore){
         event.preventDefault();
         event.stopPropagation();
             const shortcuts = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
-            const updated = shortcuts.filter(file => "🗁 "+ file.fileName+ "✎X" !== fileName.textContent );
+            const updated = shortcuts.filter(f => f.id !== file.id );
             localStorage.setItem("files", JSON.stringify(updated));
         loadShortcuts();
         loadFiles();
@@ -108,7 +109,7 @@ export function createFile(file: fileStore){
         SaveFileEditButton.addEventListener("click", (e)=>{
             if (!editFileNameBar.value) return;
             const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
-            const updated = files.map(file =>  "🗁 "+ file.fileName+ "✎X" === fileName.textContent ? {...file, fileName: editFileNameBar.value} : file);
+            const updated = files.map(file =>  file.id === fileName.id ? {...file, fileName: editFileNameBar.value} : file);
             localStorage.setItem("files", JSON.stringify(updated));
             loadShortcuts();
             loadFiles();
@@ -153,7 +154,7 @@ export function createFileMenu(){
     const AddFileButton = fileMenu.querySelector<HTMLButtonElement>("#add_file")!;
     AddFileButton.addEventListener("click", (e)=>{
         if (!fileNameBar.value) return;
-        const placeholder: fileStore = {fileName: fileNameBar.value, fileContents: []};
+        const placeholder: fileStore = {fileName: fileNameBar.value, fileContents: [], id: Date.now().toString()};
         // const newFile = createFile(placeholder);
         // const SCList = document.getElementById("shortcuts_list");
         const files = JSON.parse(localStorage.getItem("files")||"[]") as fileStore[];

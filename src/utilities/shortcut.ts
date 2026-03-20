@@ -106,54 +106,104 @@ function makeAShortcut(name:string, url:string, id:string, fileIndex?:number){
         document.body.appendChild(EditMenuContent)
 
         EditMenuContent.innerHTML = `
-            <div id="edit_shortcut_menu">
-                <div style="padding: 10px;">
-                    <strong>Edit Shortcut</strong>
-                </div>
-            <form>
-                <label for="edit_sc_name">Shortcut Name</label>
-                <input type="text" id="edit_sc_name" name="Edit_Shortcut_Name"><br><br>
-                <label for="edit_sc_url">Shortcut URL</label>
-                <input type="url" id="edit_sc_url" name="Edit_Shortcut_URL"><br><br>
-            </form>
-            <button id=save_edit>Save</button>
-            <button id=cancel_edit>Cancel</button>
+            <div style="padding: 10px;">
+                <strong>Edit Shortcut</strong>
             </div>
-        </div>
+        <form>
+            <label for="edit_sc_name">Shortcut Name</label>
+            <input type="text" id="edit_sc_name" name="Edit_Shortcut_Name"><br><br>
+            <label for="edit_sc_url">Shortcut URL</label>
+            <input type="url" id="edit_sc_url" name="Edit_Shortcut_URL"><br><br>
+            <label for="edit_fileAddMenu">Add To File</label><br><br>
+            <select id="edit_fileAddMenu"></select><br><br>
+        </form>
+        <button id="save_edit">Save</button>
+        <button id="cancel_edit">Cancel</button>
         `;
-        const editNameBar = EditMenuContent.querySelector<HTMLInputElement>("#edit_sc_name")!;;
+
+        // Populate the dropdown with files
+        const editFileSelect = EditMenuContent.querySelector<HTMLSelectElement>("#edit_fileAddMenu")!;
+        const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
+        
+        const noFileOption = document.createElement("option");
+        noFileOption.value = "";
+        noFileOption.textContent = "Add to Shortcuts Menu";
+        noFileOption.selected = true;
+        editFileSelect.appendChild(noFileOption);
+        
+        files.forEach((file, index) => {
+            const option = document.createElement("option");
+            option.value = index.toString();
+            option.textContent = file.fileName;
+            editFileSelect.appendChild(option);
+        });
+        
+        if (fileIndex !== undefined) {
+            editFileSelect.value = fileIndex.toString();
+        } else {
+            editFileSelect.value = "";
+        }
+
+        const editNameBar = EditMenuContent.querySelector<HTMLInputElement>("#edit_sc_name")!;
         editNameBar.value = name;
         const editURLBar = EditMenuContent.querySelector<HTMLInputElement>("#edit_sc_url")!;
         editURLBar.value = url;
 
         const SaveEditButton = EditMenuContent.querySelector<HTMLButtonElement>("#save_edit")!;
         SaveEditButton.addEventListener("click", (e)=>{
+            e.preventDefault();
             if (!editNameBar.value || !editURLBar.value) return;
-            if (fileIndex !== undefined) {
-                const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
-                files[fileIndex].fileContents = files[fileIndex].fileContents.map(l => l.id === id ? {name: editNameBar.value, url: editURLBar.value, id} : l);
-                localStorage.setItem("files", JSON.stringify(files));
+            
+            const newFileIndex = editFileSelect.value === "" ? undefined : Number(editFileSelect.value);
+            const updatedShortcut = {name: editNameBar.value, url: editURLBar.value, id};
+            
+            // If the file location changed, we need to move it
+            if (fileIndex !== newFileIndex) {
+                // Remove from old location
+                if (fileIndex !== undefined) {
+                    const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
+                    files[fileIndex].fileContents = files[fileIndex].fileContents.filter(l => l.id !== id);
+                    localStorage.setItem("files", JSON.stringify(files));
+                } else {
+                    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
+                    const updated = shortcuts.filter(shortcut => shortcut.id !== id);
+                    localStorage.setItem("shortcuts", JSON.stringify(updated));
+                }
+                
+                // Add to new location
+                if (newFileIndex !== undefined) {
+                    const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
+                    files[newFileIndex].fileContents.push(updatedShortcut);
+                    localStorage.setItem("files", JSON.stringify(files));
+                } else {
+                    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
+                    shortcuts.push(updatedShortcut);
+                    localStorage.setItem("shortcuts", JSON.stringify(shortcuts));
+                }
             } else {
-                const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
-                const updated = shortcuts.map(shortcut => shortcut.id === id ? {name:editNameBar.value, url:editURLBar.value, id} : shortcut);
-                localStorage.setItem("shortcuts", JSON.stringify(updated));
+                // Same location, just update the shortcut
+                if (fileIndex !== undefined) {
+                    const files = JSON.parse(localStorage.getItem("files") || "[]") as fileStore[];
+                    files[fileIndex].fileContents = files[fileIndex].fileContents.map(l => l.id === id ? updatedShortcut : l);
+                    localStorage.setItem("files", JSON.stringify(files));
+                } else {
+                    const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string; id: string }[];
+                    const updated = shortcuts.map(shortcut => shortcut.id === id ? updatedShortcut : shortcut);
+                    localStorage.setItem("shortcuts", JSON.stringify(updated));
+                }
             }
+
             loadShortcuts();
             loadFiles();
+
             EditMenuContent.remove();
 
         });
         const CancelEditButton = EditMenuContent.querySelector<HTMLButtonElement>("#cancel_edit")!;
         CancelEditButton.addEventListener("click", (e)=>{
+            e.preventDefault();
             EditMenuContent.remove();
         });
-
-        // if (!newName || !newUrl) return;
-        // const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]") as { name:string; url:string }[];
-        // const updated = shortcuts.map(shortcut => shortcut.name === name && shortcut.url === url ? {name:newName,url:newUrl} : shortcut);
-        // localStorage.setItem("shortcuts", JSON.stringify(updated));
-        // loadShortcuts();
-        //editShortcut.appendChild(EditMenuContent)
     });
     linkHolder.appendChild(shortcutLink);
     linkHolder.appendChild(editShortcut);
@@ -316,8 +366,8 @@ function Shortcutswindow() { //This function is called
     document.body.appendChild(ShortcutContainer);
     ShortcutContainer.appendChild(ShortcutHeader);
     ShortcutContainer.appendChild(ShortcutContent);
-    ShortcutContent.appendChild(shortcutsList)
     ShortcutContent.appendChild(filesList)
+    ShortcutContent.appendChild(shortcutsList)
     ShortcutContent.appendChild(shortcutButton);
     //clearALLShortcuts(); //ONLY UNCOMMENT WHEN DEBUGGING! THIS DELETES ALL LINKS WHEN PAGE IS REFRESHED!
     loadShortcuts();
@@ -344,6 +394,28 @@ function Shortcutswindow() { //This function is called
         ShortcutContent.style.display = isMinimized ? "none" : "flex";
         minimizeButton.textContent = isMinimized ? "+" : "−";
         ShortcutContainer.style.height = isMinimized ? "40px" : "550px";
+        
+        //Copilot assisted with the following code to adjust position when maximizing
+        // When maximizing, adjust position to expand upward if needed
+        if (!isMinimized) {
+            const containerRect = ShortcutContainer.getBoundingClientRect();
+            const expandedHeight = 550;
+            const bottomSpace = window.innerHeight - containerRect.bottom;
+            
+            // If not enough space at bottom, expand upward instead
+            if (bottomSpace < expandedHeight) {
+                ShortcutContainer.style.bottom = "auto";
+                ShortcutContainer.style.top = Math.max(10, window.innerHeight - expandedHeight - 20) + "px";
+            } else {
+                ShortcutContainer.style.top = "auto";
+                ShortcutContainer.style.bottom = "20px";
+            }
+        } else {
+            // When minimizing, keep default bottom position
+            ShortcutContainer.style.top = "auto";
+            ShortcutContainer.style.bottom = "20px";
+        }
+        
         // Save the minimized state to local storage
         localStorage.setItem("shortcutMinimized", isMinimized.toString());
     });
